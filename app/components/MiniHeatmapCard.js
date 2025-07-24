@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaCalendarAlt } from "react-icons/fa";
 
 const colorClassMap = {
   "red-600": "bg-red-600",
@@ -35,6 +36,7 @@ function getYearDays() {
 export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, completionPercent, color }) {
   const [completions, setCompletions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCompletedToday, setIsCompletedToday] = useState(false);
 
   useEffect(() => {
     async function fetchCompletions() {
@@ -52,50 +54,94 @@ export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, co
     fetchCompletions();
   }, [habitId]);
 
+  useEffect(() => {
+    if (!loading && completions.length > 0) {
+      const today = new Date();
+      const todayStr = today.toISOString().slice(0, 10);
+      const dates = completions.map((c) => c.date.slice(0, 10));
+      setIsCompletedToday(dates.includes(todayStr));
+    } else {
+      setIsCompletedToday(false);
+    }
+  }, [completions, loading]);
+
+  // Emoji background color (stable per habitId)
+  const emojiBgColors = [
+    "bg-blue-100", "bg-green-100", "bg-yellow-100", "bg-pink-100", "bg-purple-100", "bg-orange-100", "bg-red-100", "bg-teal-100", "bg-indigo-100"
+  ];
+  const emojiBg = (() => {
+    if (!habitId) return emojiBgColors[0];
+    let hash = 0;
+    for (let i = 0; i < habitId.length; i++) hash = habitId.charCodeAt(i) + ((hash << 5) - hash);
+    return emojiBgColors[Math.abs(hash) % emojiBgColors.length];
+  })();
+
   const completedSet = new Set(completions.map(c => c.date.slice(0, 10)));
   const days = getYearDays();
   const weeks = Array.from({ length: 53 }, (_, w) => days.slice(w * 7, w * 7 + 7));
 
+  // Blue color scale for heatmap
+  const blueScale = ["bg-blue-50", "bg-blue-200", "bg-blue-400", "bg-blue-600"];
+  function getBlueShade(day) {
+    if (!completedSet.has(day)) return "bg-white";
+    // For demo: randomize shade for visual effect
+    const idx = (day.charCodeAt(0) + day.charCodeAt(day.length-1)) % blueScale.length;
+    return blueScale[idx];
+  }
+
   return (
-    <div className="w-full border border-gray-200 rounded-2xl p-5 bg-gradient-to-br from-white via-indigo-50 to-indigo-100 shadow flex flex-col gap-2">
-      <div className="flex items-center gap-2 mb-1">
-        <span className="text-2xl">{emoji}</span>
-        <span className="inline-block px-2 py-1 rounded-full bg-indigo-200 text-indigo-700 text-xs font-semibold">{tag}</span>
-      </div>
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-2">
-        <h2 className="text-lg font-bold text-gray-900 tracking-tight mb-2 md:mb-0">{title}</h2>
-        <div className="flex gap-4 items-center">
-          <span className="flex items-center gap-1 text-green-600 font-semibold text-sm">
-            <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M13 17v5h-2v-5a7 7 0 1 1 2 0z" />
-            </svg>
-            {streak} day streak
-          </span>
-          <span className="flex items-center gap-1 text-blue-600 font-semibold text-sm">
-            <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
-              <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" fill="none" />
-            </svg>
-            {completionPercent}% complete
-          </span>
+    <div className="w-full bg-white m-0 p-0 flex flex-col gap-2 overflow-x-auto box-border">
+      {/* <div className="flex items-center gap-3 mb-1">
+        <span className={`text-2xl p-2 rounded-md ${emojiBg}`}>{emoji}</span>
+        <div className="flex flex-col">
+          <span className="font-bold text-xl text-gray-900 leading-tight">{title}</span>
+          <span className="inline-block px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-xs font-semibold mt-0.5 w-fit">{tag}</span>
+        </div>
+        <div className="ml-auto">
+          {isCompletedToday && (
+            <span className="bg-green-100 text-green-700 text-xs font-semibold px-4 py-1 rounded-full">Completed Today</span>
+          )}
         </div>
       </div>
-      <div className="w-full overflow-x-auto">
+      <div className="flex items-center gap-6 flex-wrap mb-1">
+        <span className="flex items-center gap-1 text-orange-700 font-semibold text-base">
+          <span className="text-lg">🔥</span> {streak} day streak
+        </span>
+        <span className="flex items-center gap-1 text-blue-700 font-semibold text-base">
+          <span className="text-lg">🎯</span> {completionPercent}% completion rate
+        </span>
+      </div> */}
+      <div className="flex items-center gap-2 text-gray-700 text-sm font-semibold mb-2 mt-2">
+        <FaCalendarAlt className="w-4 h-4" />
+        Activity over the past year
+      </div>
+      <div className="w-full max-w-full overflow-x-auto">
         {loading ? (
           <div className="text-gray-400 text-sm">Loading heatmap...</div>
         ) : (
-          <div className="flex">
-            {weeks.map((week, wi) => (
-              <div key={wi} className="flex flex-col">
-                {week.map((day, di) => (
-                  <div
-                    key={day}
-                    className={`w-3 h-3 m-0.5 rounded ${completedSet.has(day) ? colorClassMap[color] || "bg-gray-400" : "bg-white"} border border-gray-200`}
-                    title={day}
-                  />
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between mb-1 px-1">
+              <span className="text-xs text-gray-400 font-semibold">Less</span>
+              <div className="flex gap-1">
+                {blueScale.map((cls, i) => (
+                  <div key={i} className={`w-4 h-3 rounded ${cls} border border-gray-200`} />
                 ))}
               </div>
-            ))}
+              <span className="text-xs text-gray-400 font-semibold">More</span>
+            </div>
+            <div className="flex">
+              {weeks.map((week, wi) => (
+                <div key={wi} className="flex flex-col">
+                  {week.map((day, di) => (
+                    <div
+                      key={day}
+                      className={`w-4 h-4 m-0.5 rounded ${getBlueShade(day)} border border-gray-200`}
+                      title={day}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

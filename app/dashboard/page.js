@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../components/PageHeader";
 import MiniHeatmapCard from "../components/MiniHeatmapCard";
+import { FaCalendarAlt, FaClock, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 export default function Dashboard() {
   const [habits, setHabits] = useState([]);
@@ -76,37 +77,71 @@ export default function Dashboard() {
           <p className="text-xs text-gray-500">Total tracking days</p>
         </div>
       </div>
-      <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 px-8">
         {/* Left: Habit Activity Heatmaps */}
-        <div>
-          <h2 className="text-xl font-bold mb-4">Habit Activity Heatmaps</h2>
-          <div className="flex flex-col gap-4">
-            {habits.slice(0, 4).map((habit) => (
-              <MiniHeatmapCard
-                key={habit.id}
-                habitId={habit.id}
-                title={habit.title}
-                streak={habit.streak}
-                completionPercent={habit.completionPercent}
-                color={habit.color}
-              />
-            ))}
+        <div className="md:col-span-2">
+          <div className="border border-gray-200 rounded-2xl bg-white p-8 mb-4">
+            <div className="flex items-center gap-3 mb-1">
+              <FaCalendarAlt className="w-6 h-6 text-gray-700" />
+              <h2 className="text-2xl font-bold text-gray-900">Habit Activity Heatmaps</h2>
+            </div>
+            <div className="text-gray-500 text-base mb-6 ml-9">Individual completion patterns for each of your habits</div>
+            <div className="flex flex-col gap-8">
+              {habits.slice(0, 4).map((habit) => (
+                <div key={habit.id} className="flex flex-col items-start gap-4">
+                  <div className="flex items-center gap-4">
+                  <span className={`text-2xl p-2 rounded-md bg-blue-100 mt-1`}>{habit.emoji}</span>
+                  <div className="flex flex-col flex-1">
+                    <span className="font-semibold text-lg text-gray-900">{habit.title}</span>
+                    <div className="flex items-center gap-4 text-gray-500 text-base mb-2">
+                      <span>{habit.streak} day streak</span>
+                      <span>• {habit.completionPercent}% completion rate</span>
+                    </div>
+                   
+                  </div>
+                  </div>
+                  <MiniHeatmapCard
+                      habitId={habit.id}
+                      title={undefined}
+                      streak={undefined}
+                      completionPercent={undefined}
+                      color={habit.color}
+                      emoji={undefined}
+                      tag={undefined}
+                    />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         {/* Right: Recent Activity */}
-        <div>
-          <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-          <div className="flex flex-col gap-3">
-            {recentActivity.length === 0 && <div className="text-gray-500">No recent activity.</div>}
-            {recentActivity.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded shadow-sm">
-                <span className="font-semibold text-gray-800">{item.habitName}</span>
-                <span className={`text-xs px-2 py-1 rounded ${item.status === "completed" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-                  {item.status === "completed" ? "Completed" : "Missed"}
-                </span>
-                <span className="text-gray-500 text-xs ml-auto">{item.when}</span>
-              </div>
-            ))}
+        <div className="md:col-span-1">
+          <div className="border border-gray-200 rounded-2xl bg-white p-6 mb-4">
+            <div className="flex items-center gap-3 mb-1">
+              <FaClock className="w-6 h-6 text-gray-700" />
+              <h2 className="text-2xl font-bold text-gray-900">Recent Activity</h2>
+            </div>
+            <div className="text-gray-500 text-base mb-6 ml-9">Your latest habit completions and updates</div>
+            <div className="flex flex-col gap-4">
+              {recentActivity.length === 0 && <div className="text-gray-500">No recent activity.</div>}
+              {recentActivity.map((item, idx) => {
+                const habitEmoji = habits.find(h => h.id === item.habitId)?.emoji || "❓";
+                return (
+                  <div key={idx} className="flex items-center gap-3">
+                    <span className={`text-2xl p-2 rounded-md bg-blue-100`}>{habitEmoji}</span>
+                    <div className="flex flex-col flex-1">
+                      <span className="font-semibold text-base text-gray-900">{item.habitName} {item.status === "completed" ? <FaCheckCircle className="inline ml-1 text-green-500 w-4 h-4" /> : <FaTimesCircle className="inline ml-1 text-red-500 w-4 h-4" />}</span>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`text-xs font-semibold px-3 py-1 rounded-full ${item.status === "completed" ? "bg-gray-900 text-white" : "bg-red-500 text-white"}`}>
+                          {item.status === "completed" ? "completed" : "missed"}
+                        </span>
+                        <span className="text-xs text-gray-500 ml-2">{item.when}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

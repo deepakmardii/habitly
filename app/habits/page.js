@@ -11,7 +11,6 @@ export default function Habits() {
   const [habits, setHabits] = useState([]);
   const [activeTab, setActiveTab] = useState("grid");
   const handleDelete = async (habitId) => {
-    if (!window.confirm("Are you sure you want to delete this habit?")) return;
     await fetch(`/api/habits/${habitId}`, { method: "DELETE" });
     // Refetch habits
     const res = await fetch("/api/habits");
@@ -28,50 +27,68 @@ export default function Habits() {
   return (
     <div>
       <PageHeader title="Habits" subtitle="Manage and track all your habits in one place" />
-      <div className="flex mb-4 gap-2">
-        <button
-          className={`px-4 py-2 rounded ${
-            activeTab === "grid" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
-          onClick={() => setActiveTab("grid")}
-        >
-          Grid View
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${
-            activeTab === "heatmap" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
-          onClick={() => setActiveTab("heatmap")}
-        >
-          Heatmap View
-        </button>
+      {/* Search and Filter Row */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6 mt-2 p-4 px-8">
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <input
+            type="text"
+            placeholder="Search habits..."
+            className="w-full md:w-72 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 bg-gray-50 text-gray-700"
+            disabled
+          />
+          <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg bg-white text-gray-700 font-medium hover:bg-gray-100" disabled>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
+            Filter
+          </button>
+        </div>
+        {/* View Toggle */}
+        <div className="flex gap-2 mt-2 md:mt-0">
+          <button
+            className={`px-4 py-2 rounded font-semibold text-sm border transition-all duration-150 ${activeTab === "grid" ? "bg-white border-blue-500 text-blue-600 shadow" : "bg-gray-100 border-gray-200 text-gray-500 hover:bg-gray-200"}`}
+            onClick={() => setActiveTab("grid")}
+          >
+            Grid View
+          </button>
+          <button
+            className={`px-4 py-2 rounded font-semibold text-sm border transition-all duration-150 ${activeTab === "heatmap" ? "bg-white border-blue-500 text-blue-600 shadow" : "bg-gray-100 border-gray-200 text-gray-500 hover:bg-gray-200"}`}
+            onClick={() => setActiveTab("heatmap")}
+          >
+            Heatmap View
+          </button>
+        </div>
       </div>
       {activeTab === "grid" ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {habits.map((habit, idx) => (
-            <HabitCard
-              key={habit.id ?? idx}
-              habitId={habit.id}
-              title={habit.title}
-              emoji={habit.emoji}
-              tag={habit.tag}
-              description={habit.description}
-              streak={habit.streak}
-              completionPercent={habit.completionPercent}
-              progressToGoal={habit.progressToGoal}
-              reminderTime={habit.reminderTime}
-              onMarkComplete={async () => {
-                // Refetch habits after marking complete
-                const res = await fetch("/api/habits");
-                const data = await res.json();
-                setHabits(data);
-              }}
-              onDelete={() => handleDelete(habit.id)}
-            />
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-8">
+          {habits.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center justify-center min-h-[60vh] h-full w-full text-gray-400 text-lg font-semibold">
+              <span>No habits yet. Start by creating your first habit!</span>
+            </div>
+          ) : (
+            habits.map((habit, idx) => (
+              <HabitCard
+                key={habit.id ?? idx}
+                habitId={habit.id}
+                title={habit.title}
+                emoji={habit.emoji}
+                tag={habit.tag}
+                description={habit.description}
+                streak={habit.streak}
+                completionPercent={habit.completionPercent}
+                progressToGoal={habit.progressToGoal}
+                reminderTime={habit.reminderTime}
+                onMarkComplete={async () => {
+                  // Refetch habits after marking complete
+                  const res = await fetch("/api/habits");
+                  const data = await res.json();
+                  setHabits(data);
+                }}
+                onDelete={() => handleDelete(habit.id)}
+              />
+            ))
+          )}
         </div>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 px-8">
           {habits.map((habit, idx) => (
             <MiniHeatmapCard
               key={habit.id}
