@@ -24,6 +24,10 @@ export default function Signup() {
         setError(data.error || "Signup failed");
       } else {
         localStorage.setItem("isLoggedIn", "true");
+        if (data.id) {
+          localStorage.setItem("userId", data.id);
+          document.cookie = `userId=${data.id}; path=/; SameSite=Lax`;
+        }
         document.cookie = "isLoggedIn=true; path=/; SameSite=Lax";
         window.dispatchEvent(new Event("storage"));
         router.push("/dashboard");

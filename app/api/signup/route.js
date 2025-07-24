@@ -18,7 +18,12 @@ export async function POST(req) {
     const user = await prisma.user.create({
       data: { email, password: hashed },
     });
-    return new Response(JSON.stringify({ id: user.id, email: user.email }), { status: 201 });
+    return new Response(JSON.stringify({ id: user.id, email: user.email }), {
+      status: 201,
+      headers: {
+        "Set-Cookie": `userId=${user.id}; Path=/; HttpOnly; SameSite=Lax`
+      }
+    });
   } catch (err) {
     return new Response(JSON.stringify({ error: "Signup failed" }), { status: 500 });
   }

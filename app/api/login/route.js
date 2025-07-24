@@ -18,7 +18,12 @@ export async function POST(req) {
     if (!valid) {
       return new Response(JSON.stringify({ error: "Invalid credentials" }), { status: 401 });
     }
-    return new Response(JSON.stringify({ id: user.id, email: user.email }), { status: 200 });
+    return new Response(JSON.stringify({ id: user.id, email: user.email }), {
+      status: 200,
+      headers: {
+        "Set-Cookie": `userId=${user.id}; Path=/; HttpOnly; SameSite=Lax`
+      }
+    });
   } catch (err) {
     return new Response(JSON.stringify({ error: "Login failed" }), { status: 500 });
   }
