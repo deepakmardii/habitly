@@ -58,4 +58,33 @@ export async function POST(req) {
   } catch (e) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500 });
   }
-} 
+}
+
+export async function GET(req) {
+  try {
+    const userId = getUserIdFromRequest(req);
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Not authenticated' }), { status: 401 });
+    }
+    const habits = await prisma.habit.findMany({
+      where: { userId },
+    });
+
+    // Map DB fields to HabitCard props
+    const habitCards = habits.map(habit => ({
+      title: habit.name,
+      category: habit.icon, // Assuming 'icon' is used as category
+      description: habit.description,
+      streak: habit.streak || 0, // Default to 0 if not present
+      completionPercent: habit.completionPercent || 0, // Default to 0 if not present
+      progressToGoal: habit.streak_goal ? `${habit.streak || 0}/${habit.streak_goal}` : '',
+      reminderTime: habit.reminder_time
+        ? habit.reminder_time.toISOString().slice(11, 16)
+        : '',
+    }));
+
+    return new Response(JSON.stringify(habitCards), { status: 200 });
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e.message }), { status: 500 });
+  }
+}
