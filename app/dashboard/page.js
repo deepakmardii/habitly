@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import PageHeader from "../components/PageHeader";
 
 export default function Dashboard() {
   const [habits, setHabits] = useState([]);
@@ -22,8 +23,8 @@ export default function Dashboard() {
   const activeHabits = habits;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-      <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+    <div className="min-h-screen flex flex-col bg-white">
+      <PageHeader title="Dashboard" subtitle="Welcome back! Here's your habit progress overview." />
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <div className="bg-gray-100 rounded-lg shadow p-6 flex flex-col items-center">
           <h2 className="text-xl font-semibold mb-2">Active Habits</h2>

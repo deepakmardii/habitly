@@ -1,3 +1,7 @@
+import PageHeader from "../components/PageHeader";
+
 export default function Analytics() {
-  return <h1 className="text-2xl font-bold">Analytics</h1>;
+  return (
+    <PageHeader title="Analytics" subtitle="Detailed insights into your habit tracking progress." />
+  );
 } 

@@ -4,6 +4,7 @@ import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
 import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import PageHeader from "../components/PageHeader";
 
 export default function Habits() {
   const [habits, setHabits] = useState([]);
@@ -25,7 +26,7 @@ export default function Habits() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Habits</h1>
+      <PageHeader title="Habits" subtitle="Manage and track all your habits in one place" />
       <div className="flex mb-4 gap-2">
         <button
           className={`px-4 py-2 rounded ${
