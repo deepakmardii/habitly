@@ -30,30 +30,50 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <PageHeader title="Dashboard" subtitle="Welcome back! Here's your habit progress overview." />
-      <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div className="bg-gray-100 rounded-lg shadow p-6 flex flex-col items-center">
-          <h2 className="text-xl font-semibold mb-2">Active Habits</h2>
+      <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 pt-8 p-4">
+        {/* Active Habits */}
+        <div className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col justify-between min-h-[140px] relative">
+          <span className="absolute top-4 right-4 text-xl text-blue-500">🎯</span>
+          <h2 className="text-lg font-bold text-gray-700 mb-1">Active Habits</h2>
           {loading ? (
-            <p className="text-gray-500">Loading...</p>
+            <p className="text-gray-400 font-bold text-3xl mb-1">-</p>
           ) : (
-            <p className="font-bold text-3xl mb-2">{activeHabits.length}</p>
+            <p className="font-bold text-3xl mb-1">{activeHabits.length}</p>
           )}
-          <p className="text-gray-700 mb-2">Currently tracking</p>
+          <p className="text-xs text-gray-500">Currently tracking</p>
         </div>
-        <div className="bg-green-50 rounded-lg shadow p-6 flex flex-col items-center">
-          <h2 className="text-xl font-semibold mb-2">Current Streaks</h2>
-          <p className="font-bold text-3xl mb-2">{summary ? summary.currentStreaks : "-"}</p>
-          <p className="text-gray-700 mb-2">Habits with active streaks</p>
+        {/* Current Streaks */}
+        <div className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col justify-between min-h-[140px] relative">
+          <span className="absolute top-4 right-4 text-xl text-orange-500">🔥</span>
+          <h2 className="text-lg font-bold text-gray-700 mb-1">Current Streaks</h2>
+          {loading ? (
+            <p className="text-gray-400 font-bold text-3xl mb-1">-</p>
+          ) : (
+            <p className="font-bold text-3xl mb-1">{summary ? summary.currentStreaks : "-"}</p>
+          )}
+          <p className="text-xs text-gray-500">Habits with active streaks</p>
         </div>
-        <div className="bg-blue-50 rounded-lg shadow p-6 flex flex-col items-center">
-          <h2 className="text-xl font-semibold mb-2">Completion Rate</h2>
-          <p className="font-bold text-3xl mb-2">{summary ? summary.completionRate + "%" : "-"}</p>
-          <p className="text-gray-700 mb-2">This week's average</p>
+        {/* Completion Rate */}
+        <div className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col justify-between min-h-[140px] relative">
+          <span className="absolute top-4 right-4 text-xl text-green-600">📈</span>
+          <h2 className="text-lg font-bold text-gray-700 mb-1">Completion Rate</h2>
+          {loading ? (
+            <p className="text-gray-400 font-bold text-3xl mb-1">-</p>
+          ) : (
+            <p className="font-bold text-3xl mb-1">{summary ? summary.completionRate + "%" : "-"}</p>
+          )}
+          <p className="text-xs text-gray-500">This week's average</p>
         </div>
-        <div className="bg-yellow-50 rounded-lg shadow p-6 flex flex-col items-center">
-          <h2 className="text-xl font-semibold mb-2">Days Tracked</h2>
-          <p className="font-bold text-3xl mb-2">{summary ? summary.daysTracked : "-"}</p>
-          <p className="text-gray-700 mb-2">Since first habit</p>
+        {/* Days Tracked */}
+        <div className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col justify-between min-h-[140px] relative">
+          <span className="absolute top-4 right-4 text-xl text-purple-500">🗓️</span>
+          <h2 className="text-lg font-bold text-gray-700 mb-1">Days Tracked</h2>
+          {loading ? (
+            <p className="text-gray-400 font-bold text-3xl mb-1">-</p>
+          ) : (
+            <p className="font-bold text-3xl mb-1">{summary ? summary.daysTracked : "-"}</p>
+          )}
+          <p className="text-xs text-gray-500">Total tracking days</p>
         </div>
       </div>
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">

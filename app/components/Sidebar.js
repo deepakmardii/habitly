@@ -7,9 +7,11 @@ import { Button } from "../../components/ui/button";
 import { Separator } from "../../components/ui/separator";
 import { Menu, Plus, LayoutDashboard, ListTodo, BarChart2, Settings, Gem } from "lucide-react";
 import { Toaster } from "sonner";
+import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
   const [showModal, setShowModal] = useState(false);
+  const pathname = usePathname();
 
   // Sidebar content as a component for reuse
   const SidebarContent = (
@@ -49,16 +51,28 @@ export default function Sidebar() {
       />
       <span className="text-xs text-gray-500 font-semibold mb-2 uppercase tracking-wide">Navigation</span>
       <nav className="flex flex-col gap-2 flex-1">
-        <Link href="/dashboard" className="px-3 py-2 rounded-md hover:bg-gray-200 font-medium text-black transition flex items-center gap-2">
+        <Link
+          href="/dashboard"
+          className={`px-3 py-2 rounded-md font-medium transition flex items-center gap-2 ${pathname === "/dashboard" ? "bg-gray-200 text-blue-600 font-bold" : "hover:bg-gray-200 text-black"}`}
+        >
           <LayoutDashboard className="w-4 h-4" /> Dashboard
         </Link>
-        <Link href="/habits" className="px-3 py-2 rounded-md hover:bg-gray-200 font-medium text-black transition flex items-center gap-2">
+        <Link
+          href="/habits"
+          className={`px-3 py-2 rounded-md font-medium transition flex items-center gap-2 ${pathname === "/habits" ? "bg-gray-200 text-blue-600 font-bold" : "hover:bg-gray-200 text-black"}`}
+        >
           <ListTodo className="w-4 h-4" /> Habits
         </Link>
-        <Link href="/analytics" className="px-3 py-2 rounded-md hover:bg-gray-200 font-medium text-black transition flex items-center gap-2">
+        <Link
+          href="/analytics"
+          className={`px-3 py-2 rounded-md font-medium transition flex items-center gap-2 ${pathname === "/analytics" ? "bg-gray-200 text-blue-600 font-bold" : "hover:bg-gray-200 text-black"}`}
+        >
           <BarChart2 className="w-4 h-4" /> Analytics
         </Link>
-        <Link href="/settings" className="px-3 py-2 rounded-md hover:bg-gray-200 font-medium text-black transition flex items-center gap-2">
+        <Link
+          href="/settings"
+          className={`px-3 py-2 rounded-md font-medium transition flex items-center gap-2 ${pathname === "/settings" ? "bg-gray-200 text-blue-600 font-bold" : "hover:bg-gray-200 text-black"}`}
+        >
           <Settings className="w-4 h-4" /> Settings
         </Link>
       </nav>
