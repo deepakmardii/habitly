@@ -16,6 +16,7 @@ model User {
   email     String   @unique
   password  String
   habits    Habit[]
+  habitCompletions HabitCompletion[]
 }
 
 // Habits table
@@ -40,9 +41,11 @@ model HabitCompletion {
   id             String   @id @default(uuid())
   habit          Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
   habitId        String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
   completion_date DateTime
   created_at     DateTime @default(now())
-  @@unique([habitId, completion_date])
+  @@unique([habitId, userId, completion_date])
 }
 
 // Habit Reminders

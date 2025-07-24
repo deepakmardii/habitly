@@ -12,6 +12,26 @@ const colors = [
   "red-600", "orange-600", "amber-600", "yellow-600", "lime-600", "green-600", "emerald-600", "teal-600", "cyan-600", "sky-600", "blue-600", "indigo-600", "violet-600", "purple-600", "fuchsia-600", "pink-600", "rose-600"
 ];
 
+const colorClassMap = {
+  "red-600": "bg-red-600",
+  "orange-600": "bg-orange-600",
+  "amber-600": "bg-amber-600",
+  "yellow-600": "bg-yellow-600",
+  "lime-600": "bg-lime-600",
+  "green-600": "bg-green-600",
+  "emerald-600": "bg-emerald-600",
+  "teal-600": "bg-teal-600",
+  "cyan-600": "bg-cyan-600",
+  "sky-600": "bg-sky-600",
+  "blue-600": "bg-blue-600",
+  "indigo-600": "bg-indigo-600",
+  "violet-600": "bg-violet-600",
+  "purple-600": "bg-purple-600",
+  "fuchsia-600": "bg-fuchsia-600",
+  "pink-600": "bg-pink-600",
+  "rose-600": "bg-rose-600",
+};
+
 export default function NewHabitModal({ open, onClose, onSubmit }) {
   const [form, setForm] = useState({
     name: "",
@@ -63,7 +83,7 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
             <label className="block mb-1 font-medium">Color</label>
             <div className="flex flex-wrap gap-2">
               {colors.map(color => (
-                <button type="button" key={color} className={`w-7 h-7 rounded-full border-2 ${form.color === color ? 'border-black' : 'border-gray-200'}`} style={{backgroundColor: `rgb(var(--tw-color-${color}))`}} onClick={() => setForm(f => ({...f, color}))}>
+                <button type="button" key={color} className={`w-7 h-7 rounded-full border-2 ${form.color === color ? 'border-black' : 'border-gray-200'} ${colorClassMap[color]}`} onClick={() => setForm(f => ({...f, color}))}>
                   <span className="sr-only">{color}</span>
                 </button>
               ))}
