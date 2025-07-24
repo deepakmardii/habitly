@@ -179,6 +179,77 @@ export async function GET(req) {
     }
   }
 
+  // Add summary endpoint for dashboard
+  if (url.endsWith("/summary")) {
+    try {
+      const userId = getUserIdFromRequest(req);
+      if (!userId) {
+        return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
+      }
+      const habits = await prisma.habit.findMany({ where: { userId } });
+      // For each habit, fetch completions and calculate streak
+      let currentStreaks = 0;
+      let allCompletions = [];
+      let firstHabitDate = null;
+      for (const habit of habits) {
+        const completions = await prisma.habitCompletion.findMany({
+          where: { habitId: habit.id, userId },
+          select: { completion_date: true },
+          orderBy: { completion_date: "asc" },
+        });
+        allCompletions.push(...completions.map(c => c.completion_date));
+        // Streak calculation (UTC)
+        let streak = 0;
+        if (completions.length > 0) {
+          const dates = completions
+            .map((d) => new Date(d.completion_date).toISOString().slice(0, 10))
+            .sort((a, b) => b.localeCompare(a));
+          let day = new Date();
+          day.setUTCHours(0, 0, 0, 0);
+          for (let i = 0; i < dates.length; i++) {
+            if (dates[i] === day.toISOString().slice(0, 10)) {
+              streak++;
+              day.setUTCDate(day.getUTCDate() - 1);
+            } else {
+              break;
+            }
+          }
+        }
+        if (streak > 1) currentStreaks++;
+        if (!firstHabitDate || habit.created_at < firstHabitDate) {
+          firstHabitDate = habit.created_at;
+        }
+      }
+      // Completion Rate (this week's average)
+      const now = new Date();
+      now.setUTCHours(0, 0, 0, 0);
+      const weekAgo = new Date(now);
+      weekAgo.setUTCDate(now.getUTCDate() - 6);
+      const completionsThisWeek = allCompletions.filter(date => {
+        const d = new Date(date);
+        return d >= weekAgo && d <= now;
+      });
+      // Number of possible completions this week
+      const possibleCompletions = habits.length * 7;
+      const completionRate = possibleCompletions > 0 ? Math.round((completionsThisWeek.length / possibleCompletions) * 100) : 0;
+      // Days Tracked
+      let daysTracked = 0;
+      if (firstHabitDate) {
+        const first = new Date(firstHabitDate);
+        first.setUTCHours(0, 0, 0, 0);
+        daysTracked = Math.max(1, Math.floor((now - first) / (1000 * 60 * 60 * 24)) + 1);
+      }
+      return new Response(JSON.stringify({
+        activeHabits: habits.length,
+        currentStreaks,
+        completionRate,
+        daysTracked,
+      }), { status: 200 });
+    } catch (e) {
+      return new Response(JSON.stringify({ error: e.message }), { status: 500 });
+    }
+  }
+
   // Default: fetch habits
   try {
     const userId = getUserIdFromRequest(req);
