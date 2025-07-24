@@ -1,12 +1,19 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Card, CardContent, CardHeader } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { Label } from "../../components/ui/label";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(e) {
@@ -40,39 +47,56 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-100 dark:from-black dark:to-gray-900">
-      <form
-        className="bg-white dark:bg-gray-800 shadow rounded-lg p-8 w-full max-w-md flex flex-col gap-6"
-        onSubmit={handleSubmit}
-      >
-        <h1 className="text-2xl font-bold text-center mb-2">Sign Up</h1>
-        <input
-          type="email"
-          placeholder="Email"
-          className="border rounded px-4 py-2 focus:outline-none focus:ring"
-          required
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="border rounded px-4 py-2 focus:outline-none focus:ring"
-          required
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition"
-          disabled={loading}
-        >
-          {loading ? "Creating..." : "Create Account"}
-        </button>
-        {error && <p className="text-red-600 text-center">{error}</p>}
-        <p className="text-center text-gray-600 dark:text-gray-300">
-          Already have an account? <a href="/login" className="underline text-blue-600">Log in</a>
-        </p>
-      </form>
+      <Card className="w-full max-w-md shadow">
+        <CardHeader>
+          <h1 className="text-2xl font-bold text-center">Sign Up</h1>
+        </CardHeader>
+        <CardContent>
+          <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  required
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? "Creating..." : "Create Account"}
+            </Button>
+            {error && <p className="text-red-600 text-center">{error}</p>}
+            <p className="text-center text-gray-600 dark:text-gray-300">
+              Already have an account? <Link href="/login" className="underline text-blue-600">Log in</Link>
+            </p>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
