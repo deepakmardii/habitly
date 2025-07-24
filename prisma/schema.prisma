@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for NeonTech Auth (minimal, extend as needed)
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  habits    Habit[]
+}
+
+// Habits table
+model Habit {
+  id            String           @id @default(uuid())
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  name          String
+  description   String?
+  icon          String?
+  color         String?          @db.VarChar(20)
+  streak_goal   Int              @default(21)
+  reminder_time DateTime?
+  created_at    DateTime         @default(now())
+  updated_at    DateTime         @updatedAt
+  completions   HabitCompletion[]
+  reminders     HabitReminder[]
+}
+
+// Habit Completions
+model HabitCompletion {
+  id             String   @id @default(uuid())
+  habit          Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  habitId        String
+  completion_date DateTime
+  created_at     DateTime @default(now())
+  @@unique([habitId, completion_date])
+}
+
+// Habit Reminders
+model HabitReminder {
+  id           String   @id @default(uuid())
+  habit        Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  habitId      String
+  reminder_time DateTime
+  day_of_week  Int?
+  created_at   DateTime @default(now())
+}
