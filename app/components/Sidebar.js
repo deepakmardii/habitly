@@ -2,35 +2,34 @@
 import Link from "next/link";
 import { useState } from "react";
 import NewHabitModal from "./NewHabitModal";
-import { FaRegSmile } from "react-icons/fa";
+import { Sheet, SheetContent, SheetTrigger } from "../../components/ui/sheet";
+import { Button } from "../../components/ui/button";
+import { Separator } from "../../components/ui/separator";
+import { Menu, Plus, LayoutDashboard, ListTodo, BarChart2, Settings, Gem } from "lucide-react";
+import { Toaster } from "sonner";
 
 export default function Sidebar() {
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    icon: "FaRegSmile",
-    color: "blue-600",
-  });
-  const icons = ["FaRegSmile", "FaRegHeart", "FaRegStar", "FaRegCheckCircle", "FaRegSun"];
-  const colors = [
-    "red-600", "orange-600", "amber-600", "yellow-600", "lime-600", "green-600", "emerald-600", "teal-600", "cyan-600", "sky-600", "blue-600", "indigo-600", "violet-600", "purple-600", "fuchsia-600", "pink-600", "rose-600"
-  ];
 
-  return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-gray-100 text-black shadow-lg flex flex-col border-r border-gray-200 z-40">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-blue-700 tracking-tight">Habitly</h1>
-        <p className="text-gray-600 text-sm mt-1">Build better habits</p>
+  // Sidebar content as a component for reuse
+  const SidebarContent = (
+    <div className="flex flex-col h-full">
+      <div className="mb-8 flex items-center gap-3">
+        <Gem className="w-8 h-8 text-black" />
+        <div>
+          <h1 className="text-2xl font-bold text-black leading-tight">Habitly</h1>
+          <p className="text-xs text-black font-medium mt-1">Build better habits</p>
+        </div>
       </div>
-      <button className="mb-8 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition" onClick={() => setShowModal(true)}>New Habit</button>
+      <Button className="mb-8 flex items-center gap-2 cursor-pointer" onClick={() => setShowModal(true)}>
+        <Plus className="w-5 h-5" /> New Habit
+      </Button>
       <NewHabitModal
         open={showModal}
         onClose={() => setShowModal(false)}
         onSubmit={async data => {
           setShowModal(false);
           try {
-            // Set userId cookie from localStorage (after login/signup)
             const realUserId = localStorage.getItem("userId");
             if (realUserId) {
               document.cookie = `userId=${realUserId}; path=/; SameSite=Lax`;
@@ -42,28 +41,62 @@ export default function Sidebar() {
             });
             const result = await res.json();
             if (!res.ok) throw new Error(result.error || "Unknown error");
-            alert("Habit created!");
+            // alert("Habit created!"); // Removed, toast is used in modal
           } catch (e) {
-            alert("Failed to create habit: " + e.message);
+            // alert("Failed to create habit: " + e.message); // Removed, toast is used in modal
           }
         }}
       />
+      <span className="text-xs text-gray-500 font-semibold mb-2 uppercase tracking-wide">Navigation</span>
       <nav className="flex flex-col gap-2 flex-1">
-        <Link href="/dashboard" className="px-3 py-2 rounded hover:bg-gray-200 font-medium text-black transition">Dashboard</Link>
-        <Link href="/habits" className="px-3 py-2 rounded hover:bg-gray-200 font-medium text-black transition">Habits</Link>
-        <Link href="/analytics" className="px-3 py-2 rounded hover:bg-gray-200 font-medium text-black transition">Analytics</Link>
-        <Link href="/settings" className="px-3 py-2 rounded hover:bg-gray-200 font-medium text-black transition">Settings</Link>
+        <Link href="/dashboard" className="px-3 py-2 rounded-md hover:bg-gray-200 font-medium text-black transition flex items-center gap-2">
+          <LayoutDashboard className="w-4 h-4" /> Dashboard
+        </Link>
+        <Link href="/habits" className="px-3 py-2 rounded-md hover:bg-gray-200 font-medium text-black transition flex items-center gap-2">
+          <ListTodo className="w-4 h-4" /> Habits
+        </Link>
+        <Link href="/analytics" className="px-3 py-2 rounded-md hover:bg-gray-200 font-medium text-black transition flex items-center gap-2">
+          <BarChart2 className="w-4 h-4" /> Analytics
+        </Link>
+        <Link href="/settings" className="px-3 py-2 rounded-md hover:bg-gray-200 font-medium text-black transition flex items-center gap-2">
+          <Settings className="w-4 h-4" /> Settings
+        </Link>
       </nav>
-      <button
+      <Separator className="my-4" />
+      <Button
+        variant="destructive"
+        className="w-full mt-auto mb-2 cursor-pointer"
         onClick={() => {
           localStorage.removeItem("isLoggedIn");
           document.cookie = "isLoggedIn=false; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
           window.location.href = "/";
         }}
-        className="w-full mt-auto px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition mb-2"
       >
         Logout
-      </button>
-    </aside>
+      </Button>
+    </div>
+  );
+
+  return (
+    <>
+      <Toaster position="bottom-right" toastOptions={{ className: 'text-base px-6 py-4 min-w-[320px] max-w-[400px]' }} />
+      {/* Mobile: Sheet trigger */}
+      <div className="md:hidden fixed top-4 left-4 z-50">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Menu className="w-6 h-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-6 w-64">
+            {SidebarContent}
+          </SheetContent>
+        </Sheet>
+      </div>
+      {/* Desktop: fixed sidebar */}
+      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 bg-gray-100 text-black shadow-lg flex-col border-r border-gray-200 z-40 p-4">
+        {SidebarContent}
+      </aside>
+    </>
   );
 } 
