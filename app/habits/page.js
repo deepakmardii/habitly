@@ -5,6 +5,7 @@ import "react-calendar-heatmap/dist/styles.css";
 import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import PageHeader from "../components/PageHeader";
+import MiniHeatmapCard from "../components/MiniHeatmapCard";
 
 export default function Habits() {
   const [habits, setHabits] = useState([]);
@@ -52,7 +53,8 @@ export default function Habits() {
               key={habit.id ?? idx}
               habitId={habit.id}
               title={habit.title}
-              category={habit.category}
+              emoji={habit.emoji}
+              tag={habit.tag}
               description={habit.description}
               streak={habit.streak}
               completionPercent={habit.completionPercent}
@@ -71,19 +73,15 @@ export default function Habits() {
       ) : (
         <div className="flex flex-col gap-4">
           {habits.map((habit, idx) => (
-            <HeatmapHabitCard
-              key={habit.id ?? idx}
+            <MiniHeatmapCard
+              key={habit.id}
               habitId={habit.id}
               title={habit.title}
+              emoji={habit.emoji}
+              tag={habit.tag}
               streak={habit.streak}
               completionPercent={habit.completionPercent}
               color={habit.color}
-              onMarkComplete={async () => {
-                // Refetch habits after marking complete
-                const res = await fetch("/api/habits");
-                const data = await res.json();
-                setHabits(data);
-              }}
             />
           ))}
         </div>

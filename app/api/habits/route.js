@@ -19,7 +19,8 @@ function validateHabitInput(body) {
     return "Name is required (2-50 chars)";
   if (body.description && typeof body.description !== "string")
     return "Description must be a string";
-  if (!body.icon || typeof body.icon !== "string") return "Icon is required";
+  if (!body.emoji || typeof body.emoji !== "string") return "Emoji is required";
+  if (!body.tag || typeof body.tag !== "string") return "Tag is required";
   if (!body.color || typeof body.color !== "string") return "Color is required";
   if (
     !body.streak_goal ||
@@ -108,7 +109,7 @@ export async function POST(req) {
         status: 400,
       });
     }
-    const { name, description, icon, color, streak_goal, reminder_time } = body;
+    const { name, description, emoji, tag, color, streak_goal, reminder_time } = body;
     // Check if user exists before creating habit
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
@@ -121,7 +122,8 @@ export async function POST(req) {
         userId,
         name,
         description,
-        icon,
+        emoji,
+        tag,
         color,
         streak_goal,
         reminder_time: reminder_time
@@ -300,7 +302,8 @@ export async function GET(req) {
 
         return {
           title: habit.name,
-          category: habit.icon,
+          emoji: habit.emoji,
+          tag: habit.tag,
           description: habit.description,
           streak,
           completionPercent,

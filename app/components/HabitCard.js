@@ -6,7 +6,8 @@ import { FaTrash } from "react-icons/fa";
 function HabitCard({
   habitId,
   title,
-  category,
+  emoji,
+  tag,
   description,
   streak,
   completionPercent,
@@ -76,14 +77,15 @@ function HabitCard({
           <FaTrash /> Delete
         </button>
       )}
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-2xl">{emoji}</span>
+        <span className="inline-block px-2 py-1 rounded-full bg-indigo-200 text-indigo-700 text-xs font-semibold">
+          {tag}
+        </span>
+      </div>
       <h2 className="mb-1 text-2xl font-extrabold text-gray-900 tracking-tight">
         {title}
       </h2>
-      <div className="flex items-center gap-2 mb-1">
-        <span className="inline-block px-2 py-1 rounded-full bg-indigo-200 text-indigo-700 text-xs font-semibold">
-          {category}
-        </span>
-      </div>
       <p className="mb-2 text-gray-700 text-base leading-relaxed">
         {description}
       </p>

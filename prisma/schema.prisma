@@ -26,7 +26,8 @@ model Habit {
   userId        String
   name          String
   description   String?
-  icon          String?
+  emoji         String           // New: emoji for the habit
+  tag           String           // New: tag/category for the habit
   color         String?          @db.VarChar(20)
   streak_goal   Int              @default(21)
   reminder_time DateTime?
