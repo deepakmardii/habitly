@@ -22,6 +22,26 @@ const colorClassMap = {
   "rose-600": "bg-rose-600",
 };
 
+const lightColorClassMap = {
+  "red-600": "bg-red-200",
+  "orange-600": "bg-orange-200",
+  "amber-600": "bg-amber-200",
+  "yellow-600": "bg-yellow-200",
+  "lime-600": "bg-lime-200",
+  "green-600": "bg-green-200",
+  "emerald-600": "bg-emerald-200",
+  "teal-600": "bg-teal-200",
+  "cyan-600": "bg-cyan-200",
+  "sky-600": "bg-sky-200",
+  "blue-600": "bg-blue-200",
+  "indigo-600": "bg-indigo-200",
+  "violet-600": "bg-violet-200",
+  "purple-600": "bg-purple-200",
+  "fuchsia-600": "bg-fuchsia-200",
+  "pink-600": "bg-pink-200",
+  "rose-600": "bg-rose-200",
+};
+
 function getYearDays() {
   const days = [];
   const today = new Date();
@@ -82,9 +102,14 @@ export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, co
   const weeks = Array.from({ length: 53 }, (_, w) => days.slice(w * 7, w * 7 + 7));
 
   function getShade(day) {
-    if (!completedSet.has(day)) return "bg-white";
-    // Use the exact color the user selected
-    return `bg-${color}`;
+    if (!color) return "bg-gray-200";
+    if (completedSet.has(day)) {
+      // Completed: use original (darker) color
+      return colorClassMap[color] || "bg-gray-600";
+    } else {
+      // Not completed: use lighter shade
+      return lightColorClassMap[color] || "bg-gray-200";
+    }
   }
 
   return (
