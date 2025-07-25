@@ -165,13 +165,13 @@ function HabitCard({
         {isCompletedToday ? (
           <span className="bg-green-100 text-green-700 text-sm font-semibold px-4 py-1 rounded-full">Completed Today</span>
         ) : (
-          <button
-            onClick={handleMarkComplete}
+      <button
+        onClick={handleMarkComplete}
             className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-1 rounded-full transition-all duration-150 shadow"
-            disabled={isCompletedToday}
-          >
+        disabled={isCompletedToday}
+      >
             Mark Complete
-          </button>
+      </button>
         )}
       </div>
     </div>

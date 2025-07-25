@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
@@ -43,18 +44,19 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-96 relative">
+      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md relative">
         <Button
           type="button"
           size="icon"
           variant="ghost"
-          className="absolute top-2 right-2 text-gray-700 hover:bg-gray-200 rounded-full"
+          className="absolute top-4 right-4 text-gray-700 hover:bg-gray-200 rounded-full"
           onClick={onClose}
         >
           <X className="w-6 h-6" />
         </Button>
-        <h2 className="text-xl font-bold mb-4">Create New Habit</h2>
-        <form className="flex flex-col gap-3" onSubmit={async e => {
+        <h2 className="text-2xl font-bold mb-1">Create New Habit</h2>
+        <div className="text-gray-500 text-base mb-6">Set up a new habit to track and build consistency.</div>
+        <form className="flex flex-col gap-4" onSubmit={async e => {
           e.preventDefault();
           const err = validate(form);
           if (err) { setError(err); return; }
@@ -68,61 +70,69 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
           }
         }}>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" type="text" placeholder="Name" value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} required />
+            <Label htmlFor="name">Habit Name</Label>
+            <Input id="name" type="text" placeholder="e.g., Morning Exercise" value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} required />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="description">Description</Label>
-            <Textarea id="description" placeholder="Description" value={form.description} onChange={e => setForm(f => ({...f, description: e.target.value}))} />
+            <Textarea id="description" placeholder="Brief description of your habit..." value={form.description} onChange={e => setForm(f => ({...f, description: e.target.value}))} />
           </div>
           <div>
-            <Label className="mb-1">Emoji</Label>
-            <div className="flex flex-wrap gap-2 mt-1">
-              {emojis.map(emoji => (
-                <Button type="button" key={emoji} variant={form.emoji === emoji ? "default" : "outline"} size="icon" className="text-2xl" onClick={() => setForm(f => ({...f, emoji}))}>
-                  {emoji}
-                </Button>
-              ))}
-            </div>
-          </div>
-          <div>
-            <Label className="mb-1">Tag</Label>
-            <Select value={form.tag} onValueChange={tag => setForm(f => ({...f, tag}))}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a tag" />
-              </SelectTrigger>
-              <SelectContent>
-                {tags.map(tag => (
-                  <SelectItem key={tag} value={tag}>{tag}</SelectItem>
+            <Label className="mb-1">Icon</Label>
+            <div className="max-w-full overflow-x-auto">
+              <div className="grid grid-cols-5 gap-2 min-w-[260px] w-full">
+                {emojis.map(emoji => (
+                  <button
+                    type="button"
+                    key={emoji}
+                    className={`text-2xl p-2 rounded-md border transition-all duration-100 focus:outline-none ${form.emoji === emoji ? 'border-blue-600 bg-blue-50' : 'border-gray-200 bg-white hover:bg-gray-100'}`}
+                    onClick={() => setForm(f => ({...f, emoji}))}
+                  >
+                    {emoji}
+                  </button>
                 ))}
-              </SelectContent>
-            </Select>
+              </div>
+            </div>
           </div>
           <div>
             <Label className="mb-1">Color</Label>
-            <div className="flex flex-wrap gap-2 mt-1">
-              {[
-                "red-600", "orange-600", "amber-600", "yellow-600", "lime-600", "green-600", "emerald-600", "teal-600", "cyan-600", "sky-600", "blue-600", "indigo-600", "violet-600", "purple-600", "fuchsia-600", "pink-600", "rose-600"
-              ].map(color => (
-                <Button
-                  type="button"
-                  key={color}
-                  variant={form.color === color ? "default" : "outline"}
-                  size="icon"
-                  className={`w-7 h-7 rounded-full border-2 bg-${color} relative flex items-center justify-center`}
-                  onClick={() => setForm(f => ({...f, color}))}
-                >
-                  {form.color === color && (
-                    <Check className="w-4 h-4 text-white absolute" />
-                  )}
-                  <span className="sr-only">{color}</span>
-                </Button>
-              ))}
+            <div className="flex flex-wrap gap-3 mt-1">
+              {["#2563eb","#22c55e","#06b6d4","#a21caf","#f59e42","#ef4444","#ec4899","#a3e635"].map((hex, i) => {
+                const colorMap = [
+                  "blue-600","green-500","cyan-500","purple-600","orange-400","red-500","pink-500","lime-400"
+                ];
+                return (
+                  <button
+                    type="button"
+                    key={hex}
+                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-100 focus:outline-none ${form.color === colorMap[i] ? 'border-blue-600 ring-2 ring-blue-200' : 'border-gray-200'}`}
+                    style={{background: hex}}
+                    onClick={() => setForm(f => ({...f, color: colorMap[i]}))}
+                  >
+                    {form.color === colorMap[i] && <Check className="w-4 h-4 text-white" />}
+                  </button>
+                );
+              })}
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="streak_goal">Streak Goal</Label>
-            <Input id="streak_goal" type="number" min="1" max="365" value={form.streak_goal} onChange={e => setForm(f => ({...f, streak_goal: parseInt(e.target.value) || 1}))} />
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <Label className="mb-1">Category</Label>
+              <Select value={form.tag} onValueChange={tag => setForm(f => ({...f, tag}))}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tags.map(tag => (
+                    <SelectItem key={tag} value={tag}>{tag}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex-1">
+              <Label htmlFor="streak_goal">Streak Goal (days)</Label>
+              <Input id="streak_goal" type="number" min="1" max="365" value={form.streak_goal} onChange={e => setForm(f => ({...f, streak_goal: parseInt(e.target.value) || 1}))} />
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             <Label>Reminder Time</Label>
@@ -133,7 +143,7 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
                   variant="outline"
                   className="w-full flex justify-between items-center"
                 >
-                  <span>{form.reminder_time ? form.reminder_time : "Set time"}</span>
+                  <span>{form.reminder_time ? form.reminder_time : "09:00 AM"}</span>
                   <Clock className="w-4 h-4 ml-2" />
                 </Button>
               </PopoverTrigger>
@@ -141,13 +151,12 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
                 <div className="flex gap-2">
                   <select
                     className="border rounded px-2 py-1 flex-1"
-                    value={form.reminder_time.split(":")[0] || ""}
+                    value={form.reminder_time.split(":")[0] || "09"}
                     onChange={e => {
                       const min = form.reminder_time.split(":")[1] || "00";
                       setForm(f => ({...f, reminder_time: `${e.target.value}:${min}`}));
                     }}
                   >
-                    <option value="">Hour</option>
                     {[...Array(24).keys()].map(h => (
                       <option key={h} value={h.toString().padStart(2, "0")}>{h.toString().padStart(2, "0")}</option>
                     ))}
@@ -155,13 +164,12 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
                   <span className="self-center">:</span>
                   <select
                     className="border rounded px-2 py-1 flex-1"
-                    value={form.reminder_time.split(":")[1] || ""}
+                    value={form.reminder_time.split(":")[1] || "00"}
                     onChange={e => {
-                      const hr = form.reminder_time.split(":")[0] || "00";
+                      const hr = form.reminder_time.split(":")[0] || "09";
                       setForm(f => ({...f, reminder_time: `${hr}:${e.target.value}`}));
                     }}
                   >
-                    <option value="">Min</option>
                     {[...Array(60).keys()].map(m => (
                       <option key={m} value={m.toString().padStart(2, "0")}>{m.toString().padStart(2, "0")}</option>
                     ))}
@@ -178,7 +186,10 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
             </Popover>
           </div>
           {error && <div className="text-red-600 text-sm text-center">{error}</div>}
-          <Button type="submit" className="mt-4 w-full">Create</Button>
+          <div className="flex gap-4 mt-6">
+            <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
+            <Button type="submit" className="flex-1 bg-blue-900 hover:bg-blue-800 text-white">Create Habit</Button>
+          </div>
         </form>
       </div>
     </div>

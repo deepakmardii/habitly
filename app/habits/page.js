@@ -88,7 +88,7 @@ export default function Habits() {
           )}
         </div>
       ) : (
-        <div className="flex flex-col gap-4 px-8">
+        <div className="flex flex-col gap-4 m-10 p-8 pb-14 border-2 border-gray-200 rounded-2xl">
           {habits.map((habit, idx) => (
             <MiniHeatmapCard
               key={habit.id}
@@ -99,6 +99,7 @@ export default function Habits() {
               streak={habit.streak}
               completionPercent={habit.completionPercent}
               color={habit.color}
+              showHeader={true}
             />
           ))}
         </div>

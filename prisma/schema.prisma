@@ -30,7 +30,7 @@ model Habit {
   tag           String           // New: tag/category for the habit
   color         String?          @db.VarChar(20)
   streak_goal   Int              @default(21)
-  reminder_time DateTime?
+  reminder_time DateTime?        @default(dbgenerated("1970-01-01 09:00:00+00"))
   created_at    DateTime         @default(now())
   updated_at    DateTime         @updatedAt
   completions   HabitCompletion[]

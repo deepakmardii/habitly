@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../../components/ui/tooltip";
 
 const colorClassMap = {
   "red-600": "bg-red-600",
@@ -33,7 +34,7 @@ function getYearDays() {
   return days;
 }
 
-export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, completionPercent, color }) {
+export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, completionPercent, color, showHeader = false }) {
   const [completions, setCompletions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCompletedToday, setIsCompletedToday] = useState(false);
@@ -80,41 +81,69 @@ export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, co
   const days = getYearDays();
   const weeks = Array.from({ length: 53 }, (_, w) => days.slice(w * 7, w * 7 + 7));
 
-  // Blue color scale for heatmap
-  const blueScale = ["bg-blue-50", "bg-blue-200", "bg-blue-400", "bg-blue-600"];
-  function getBlueShade(day) {
+  // Color scale map for heatmap
+  const colorScaleMap = {
+    "red-600":   ["bg-red-50", "bg-red-200", "bg-red-400", "bg-red-600"],
+    "orange-600": ["bg-orange-50", "bg-orange-200", "bg-orange-400", "bg-orange-600"],
+    "amber-600":  ["bg-amber-50", "bg-amber-200", "bg-amber-400", "bg-amber-600"],
+    "yellow-600": ["bg-yellow-50", "bg-yellow-200", "bg-yellow-400", "bg-yellow-600"],
+    "lime-600":   ["bg-lime-50", "bg-lime-200", "bg-lime-400", "bg-lime-600"],
+    "green-600":  ["bg-green-50", "bg-green-200", "bg-green-400", "bg-green-600"],
+    "emerald-600": ["bg-emerald-50", "bg-emerald-200", "bg-emerald-400", "bg-emerald-600"],
+    "teal-600":   ["bg-teal-50", "bg-teal-200", "bg-teal-400", "bg-teal-600"],
+    "cyan-600":   ["bg-cyan-50", "bg-cyan-200", "bg-cyan-400", "bg-cyan-600"],
+    "sky-600":    ["bg-sky-50", "bg-sky-200", "bg-sky-400", "bg-sky-600"],
+    "blue-600":   ["bg-blue-50", "bg-blue-200", "bg-blue-400", "bg-blue-600"],
+    "indigo-600": ["bg-indigo-50", "bg-indigo-200", "bg-indigo-400", "bg-indigo-600"],
+    "violet-600": ["bg-violet-50", "bg-violet-200", "bg-violet-400", "bg-violet-600"],
+    "purple-600": ["bg-purple-50", "bg-purple-200", "bg-purple-400", "bg-purple-600"],
+    "fuchsia-600": ["bg-fuchsia-50", "bg-fuchsia-200", "bg-fuchsia-400", "bg-fuchsia-600"],
+    "pink-600":   ["bg-pink-50", "bg-pink-200", "bg-pink-400", "bg-pink-600"],
+    "rose-600":   ["bg-rose-50", "bg-rose-200", "bg-rose-400", "bg-rose-600"],
+  };
+  // Use color prop for heatmap scale
+  const colorScale = colorScaleMap[color] || colorScaleMap["blue-600"];
+  function getShade(day) {
     if (!completedSet.has(day)) return "bg-white";
     // For demo: randomize shade for visual effect
-    const idx = (day.charCodeAt(0) + day.charCodeAt(day.length-1)) % blueScale.length;
-    return blueScale[idx];
+    const idx = (day.charCodeAt(0) + day.charCodeAt(day.length-1)) % colorScale.length;
+    return colorScale[idx];
   }
 
   return (
-    <div className="w-full bg-white m-0 p-0 flex flex-col gap-2 overflow-x-auto box-border">
-      {/* <div className="flex items-center gap-3 mb-1">
-        <span className={`text-2xl p-2 rounded-md ${emojiBg}`}>{emoji}</span>
-        <div className="flex flex-col">
-          <span className="font-bold text-xl text-gray-900 leading-tight">{title}</span>
-          <span className="inline-block px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-xs font-semibold mt-0.5 w-fit">{tag}</span>
+    <div className="w-full bg-white m-0 py-4 flex flex-col gap-2 overflow-x-auto box-border">
+      {/* Header: Only show if showHeader is true */}
+      {showHeader && (
+        <div className="flex items-center gap-3 mb-1">
+          <span className={`text-2xl p-2 rounded-md ${emojiBg}`}>{emoji}</span>
+          <div className="flex flex-col">
+            <span className="font-bold text-xl text-gray-900 leading-tight">{title}</span>
+            <span className="inline-block px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-xs font-semibold mt-0.5 w-fit">{tag}</span>
+          </div>
+          <div className="ml-auto">
+            {isCompletedToday && (
+              <span className="bg-green-100 text-green-700 text-xs font-semibold px-4 py-1 rounded-full">Completed Today</span>
+            )}
+          </div>
         </div>
-        <div className="ml-auto">
-          {isCompletedToday && (
-            <span className="bg-green-100 text-green-700 text-xs font-semibold px-4 py-1 rounded-full">Completed Today</span>
-          )}
+      )}
+      {showHeader && (
+        <div className="flex items-center gap-6 flex-wrap mb-1">
+          <span className="flex items-center gap-1 text-orange-700 font-semibold text-base">
+            <span className="text-lg">🔥</span> {streak} day streak
+          </span>
+          <span className="flex items-center gap-1 text-blue-700 font-semibold text-base">
+            <span className="text-lg">🎯</span> {completionPercent}% completion rate
+          </span>
         </div>
-      </div>
-      <div className="flex items-center gap-6 flex-wrap mb-1">
-        <span className="flex items-center gap-1 text-orange-700 font-semibold text-base">
-          <span className="text-lg">🔥</span> {streak} day streak
-        </span>
-        <span className="flex items-center gap-1 text-blue-700 font-semibold text-base">
-          <span className="text-lg">🎯</span> {completionPercent}% completion rate
-        </span>
-      </div> */}
-      <div className="flex items-center gap-2 text-gray-700 text-sm font-semibold mb-2 mt-2">
-        <FaCalendarAlt className="w-4 h-4" />
-        Activity over the past year
-      </div>
+      )}
+      {showHeader && (
+        <div className="flex items-center gap-2 text-gray-700 text-sm font-semibold mb-2 mt-2">
+          <FaCalendarAlt className="w-4 h-4" />
+          Activity over the past year
+        </div>
+      )}
+      {/* Heatmap */}
       <div className="w-full max-w-full overflow-x-auto">
         {loading ? (
           <div className="text-gray-400 text-sm">Loading heatmap...</div>
@@ -123,7 +152,7 @@ export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, co
             <div className="flex items-center justify-between mb-1 px-1">
               <span className="text-xs text-gray-400 font-semibold">Less</span>
               <div className="flex gap-1">
-                {blueScale.map((cls, i) => (
+                {colorScale.map((cls, i) => (
                   <div key={i} className={`w-4 h-3 rounded ${cls} border border-gray-200`} />
                 ))}
               </div>
@@ -133,11 +162,19 @@ export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, co
               {weeks.map((week, wi) => (
                 <div key={wi} className="flex flex-col">
                   {week.map((day, di) => (
-                    <div
-                      key={day}
-                      className={`w-4 h-4 m-0.5 rounded ${getBlueShade(day)} border border-gray-200`}
-                      title={day}
-                    />
+                    <Tooltip key={day}>
+                      <TooltipTrigger asChild>
+                        <div
+                          className={`w-4 h-4 m-0.5 rounded ${getShade(day)} border border-gray-200 transition-all duration-100 hover:ring-2 hover:ring-gray-700 hover:ring-offset-1`}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent sideOffset={4}>
+                        <div className="flex flex-col items-center">
+                          <span className="font-semibold">{day}</span>
+                          <span className="text-xs text-gray-400">{completedSet.has(day) ? "Completed" : "Not completed"}</span>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
                   ))}
                 </div>
               ))}

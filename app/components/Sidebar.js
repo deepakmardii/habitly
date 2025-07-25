@@ -5,7 +5,7 @@ import NewHabitModal from "./NewHabitModal";
 import { Sheet, SheetContent, SheetTrigger } from "../../components/ui/sheet";
 import { Button } from "../../components/ui/button";
 import { Separator } from "../../components/ui/separator";
-import { Menu, Plus, LayoutDashboard, ListTodo, BarChart2, Settings, Gem } from "lucide-react";
+import { Menu, Plus, LayoutDashboard, ListTodo, BarChart2, Settings, Gem, Clock } from "lucide-react";
 import { Toaster } from "sonner";
 import { usePathname } from "next/navigation";
 
@@ -68,6 +68,12 @@ export default function Sidebar() {
           className={`px-3 py-2 rounded-md font-medium transition flex items-center gap-2 ${pathname === "/analytics" ? "bg-gray-200 text-blue-600 font-bold" : "hover:bg-gray-200 text-black"}`}
         >
           <BarChart2 className="w-4 h-4" /> Analytics
+        </Link>
+        <Link
+          href="/reminders"
+          className={`px-3 py-2 rounded-md font-medium transition flex items-center gap-2 ${pathname === "/reminders" ? "bg-gray-200 text-blue-600 font-bold" : "hover:bg-gray-200 text-black"}`}
+        >
+          <Clock className="w-4 h-4" /> Reminders
         </Link>
         <Link
           href="/settings"

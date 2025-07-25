@@ -87,7 +87,7 @@ export default function Dashboard() {
             </div>
             <div className="text-gray-500 text-base mb-6 ml-9">Individual completion patterns for each of your habits</div>
             <div className="flex flex-col gap-8">
-              {habits.slice(0, 4).map((habit) => (
+            {habits.slice(0, 4).map((habit) => (
                 <div key={habit.id} className="flex flex-col items-start gap-4">
                   <div className="flex items-center gap-4">
                   <span className={`text-2xl p-2 rounded-md bg-blue-100 mt-1`}>{habit.emoji}</span>
@@ -100,17 +100,19 @@ export default function Dashboard() {
                    
                   </div>
                   </div>
-                  <MiniHeatmapCard
-                      habitId={habit.id}
-                      title={undefined}
-                      streak={undefined}
-                      completionPercent={undefined}
-                      color={habit.color}
-                      emoji={undefined}
-                      tag={undefined}
-                    />
+              <MiniHeatmapCard
+                key={habit.id}
+                habitId={habit.id}
+                title={undefined}
+                streak={undefined}
+                completionPercent={undefined}
+                color={habit.color}
+                emoji={undefined}
+                tag={undefined}
+                showHeader={false}
+              />
                 </div>
-              ))}
+            ))}
             </div>
           </div>
         </div>
@@ -123,7 +125,7 @@ export default function Dashboard() {
             </div>
             <div className="text-gray-500 text-base mb-6 ml-9">Your latest habit completions and updates</div>
             <div className="flex flex-col gap-4">
-              {recentActivity.length === 0 && <div className="text-gray-500">No recent activity.</div>}
+            {recentActivity.length === 0 && <div className="text-gray-500">No recent activity.</div>}
               {recentActivity.map((item, idx) => {
                 const habitEmoji = habits.find(h => h.id === item.habitId)?.emoji || "❓";
                 return (
@@ -134,20 +136,17 @@ export default function Dashboard() {
                       <div className="flex items-center gap-2 mt-1">
                         <span className={`text-xs font-semibold px-3 py-1 rounded-full ${item.status === "completed" ? "bg-gray-900 text-white" : "bg-red-500 text-white"}`}>
                           {item.status === "completed" ? "completed" : "missed"}
-                        </span>
+                </span>
                         <span className="text-xs text-gray-500 ml-2">{item.when}</span>
                       </div>
                     </div>
                   </div>
                 );
               })}
-            </div>
+              </div>
           </div>
         </div>
       </div>
-      <p className="text-gray-600">
-        Welcome! Your habit analytics and management tools will appear here.
-      </p>
     </div>
   );
 }
