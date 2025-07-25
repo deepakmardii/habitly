@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 const prisma = new PrismaClient();
 
@@ -36,15 +38,19 @@ function validateHabitInput(body) {
 
 // Daily completion endpoint: POST /api/habits/complete
 export async function POST(req) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
+  }
+  const userEmail = session.user.email;
+  const user = await prisma.user.findUnique({ where: { email: userEmail } });
+  if (!user) {
+    return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
+  }
+  const userId = user.id;
   const url = req.nextUrl?.pathname || "";
   if (url.endsWith("/complete")) {
     try {
-      const userId = getUserIdFromRequest(req);
-      if (!userId) {
-        return new Response(JSON.stringify({ error: "Not authenticated" }), {
-          status: 401,
-        });
-      }
       const body = await req.json();
       const { habitId } = body;
       if (!habitId) {
@@ -96,12 +102,6 @@ export async function POST(req) {
 
   // Default: create habit
   try {
-    const userId = getUserIdFromRequest(req);
-    if (!userId) {
-      return new Response(JSON.stringify({ error: "Not authenticated" }), {
-        status: 401,
-      });
-    }
     const body = await req.json();
     const validationError = validateHabitInput(body);
     if (validationError) {
@@ -139,15 +139,21 @@ export async function POST(req) {
 
 // Completion dates endpoint: GET /api/habits/completions?habitId=...
 export async function GET(req) {
+  console.log("Cookies:", req.cookies);
+  const session = await getServerSession(authOptions);
+  console.log("Session:", session);
+  if (!session) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+  const userEmail = session.user.email;
+  const user = await prisma.user.findUnique({ where: { email: userEmail } });
+  if (!user) {
+    return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
+  }
+  const userId = user.id;
   const url = req.nextUrl?.pathname || "";
   if (url.endsWith("/completions")) {
     try {
-      const userId = getUserIdFromRequest(req);
-      if (!userId) {
-        return new Response(JSON.stringify({ error: "Not authenticated" }), {
-          status: 401,
-        });
-      }
       const { searchParams } = new URL(req.url);
       const habitId = searchParams.get("habitId");
       if (!habitId) {
@@ -184,10 +190,6 @@ export async function GET(req) {
   // Add summary endpoint for dashboard
   if (url.endsWith("/summary")) {
     try {
-      const userId = getUserIdFromRequest(req);
-      if (!userId) {
-        return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
-      }
       const habits = await prisma.habit.findMany({ where: { userId } });
       // For each habit, fetch completions and calculate streak
       let currentStreaks = 0;
@@ -254,12 +256,6 @@ export async function GET(req) {
 
   // Default: fetch habits
   try {
-    const userId = getUserIdFromRequest(req);
-    if (!userId) {
-      return new Response(JSON.stringify({ error: "Not authenticated" }), {
-        status: 401,
-      });
-    }
     const habits = await prisma.habit.findMany({
       where: { userId },
     });

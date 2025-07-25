@@ -14,9 +14,14 @@ datasource db {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
-  password  String
+  password  String?
   habits    Habit[]
   habitCompletions HabitCompletion[]
+  name               String?
+  emailVerified      DateTime?
+  image              String?
+  accounts           Account[]
+  sessions           Session[]
 }
 
 // Habits table
@@ -30,7 +35,7 @@ model Habit {
   tag           String           // New: tag/category for the habit
   color         String?          @db.VarChar(20)
   streak_goal   Int              @default(21)
-  reminder_time DateTime?        @default(dbgenerated("1970-01-01 09:00:00+00"))
+  reminder_time DateTime?
   created_at    DateTime         @default(now())
   updated_at    DateTime         @updatedAt
   completions   HabitCompletion[]
@@ -57,4 +62,36 @@ model HabitReminder {
   reminder_time DateTime
   day_of_week  Int?
   created_at   DateTime @default(now())
+}
+
+model Account {
+  id                 String   @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id                 String   @id @default(cuid())
+  sessionToken       String   @unique
+  userId             String
+  expires            DateTime
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier         String
+  token              String   @unique
+  expires            DateTime
+  @@unique([identifier, token])
 }

@@ -24,6 +24,8 @@ export default function Habits() {
       .then((data) => setHabits(data));
   }, []);
 
+  const safeHabits = Array.isArray(habits) ? habits : [];
+
   return (
     <div>
       <PageHeader title="Habits" subtitle="Manage and track all your habits in one place" />
@@ -59,12 +61,12 @@ export default function Habits() {
       </div>
       {activeTab === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-8">
-          {habits.length === 0 ? (
+          {safeHabits.length === 0 ? (
             <div className="col-span-full flex flex-col items-center justify-center min-h-[60vh] h-full w-full text-gray-400 text-lg font-semibold">
               <span>No habits yet. Start by creating your first habit!</span>
             </div>
           ) : (
-            habits.map((habit, idx) => (
+            safeHabits.map((habit, idx) => (
               <HabitCard
                 key={habit.id ?? idx}
                 habitId={habit.id}
@@ -89,7 +91,7 @@ export default function Habits() {
         </div>
       ) : (
         <div className="flex flex-col gap-4 m-10 p-8 pb-14 border-2 border-gray-200 rounded-2xl">
-          {habits.map((habit, idx) => (
+          {safeHabits.map((habit, idx) => (
             <MiniHeatmapCard
               key={habit.id}
               habitId={habit.id}

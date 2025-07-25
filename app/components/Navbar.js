@@ -20,19 +20,6 @@ export default function Navbar() {
         Habitly
       </div>
       <div className="flex gap-6">
-        {!loggedIn && (
-          <>
-            <Link href="/" className="hover:underline">
-              Home
-            </Link>
-            <Link href="/signup" className="hover:underline">
-              Signup
-            </Link>
-            <Link href="/login" className="hover:underline">
-              Login
-            </Link>
-          </>
-        )}
         {loggedIn && (
           <>
             <Link href="/dashboard" className="hover:underline">

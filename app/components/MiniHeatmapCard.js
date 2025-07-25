@@ -81,33 +81,10 @@ export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, co
   const days = getYearDays();
   const weeks = Array.from({ length: 53 }, (_, w) => days.slice(w * 7, w * 7 + 7));
 
-  // Color scale map for heatmap
-  const colorScaleMap = {
-    "red-600":   ["bg-red-50", "bg-red-200", "bg-red-400", "bg-red-600"],
-    "orange-600": ["bg-orange-50", "bg-orange-200", "bg-orange-400", "bg-orange-600"],
-    "amber-600":  ["bg-amber-50", "bg-amber-200", "bg-amber-400", "bg-amber-600"],
-    "yellow-600": ["bg-yellow-50", "bg-yellow-200", "bg-yellow-400", "bg-yellow-600"],
-    "lime-600":   ["bg-lime-50", "bg-lime-200", "bg-lime-400", "bg-lime-600"],
-    "green-600":  ["bg-green-50", "bg-green-200", "bg-green-400", "bg-green-600"],
-    "emerald-600": ["bg-emerald-50", "bg-emerald-200", "bg-emerald-400", "bg-emerald-600"],
-    "teal-600":   ["bg-teal-50", "bg-teal-200", "bg-teal-400", "bg-teal-600"],
-    "cyan-600":   ["bg-cyan-50", "bg-cyan-200", "bg-cyan-400", "bg-cyan-600"],
-    "sky-600":    ["bg-sky-50", "bg-sky-200", "bg-sky-400", "bg-sky-600"],
-    "blue-600":   ["bg-blue-50", "bg-blue-200", "bg-blue-400", "bg-blue-600"],
-    "indigo-600": ["bg-indigo-50", "bg-indigo-200", "bg-indigo-400", "bg-indigo-600"],
-    "violet-600": ["bg-violet-50", "bg-violet-200", "bg-violet-400", "bg-violet-600"],
-    "purple-600": ["bg-purple-50", "bg-purple-200", "bg-purple-400", "bg-purple-600"],
-    "fuchsia-600": ["bg-fuchsia-50", "bg-fuchsia-200", "bg-fuchsia-400", "bg-fuchsia-600"],
-    "pink-600":   ["bg-pink-50", "bg-pink-200", "bg-pink-400", "bg-pink-600"],
-    "rose-600":   ["bg-rose-50", "bg-rose-200", "bg-rose-400", "bg-rose-600"],
-  };
-  // Use color prop for heatmap scale
-  const colorScale = colorScaleMap[color] || colorScaleMap["blue-600"];
   function getShade(day) {
     if (!completedSet.has(day)) return "bg-white";
-    // For demo: randomize shade for visual effect
-    const idx = (day.charCodeAt(0) + day.charCodeAt(day.length-1)) % colorScale.length;
-    return colorScale[idx];
+    // Use the exact color the user selected
+    return `bg-${color}`;
   }
 
   return (
@@ -152,9 +129,9 @@ export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, co
             <div className="flex items-center justify-between mb-1 px-1">
               <span className="text-xs text-gray-400 font-semibold">Less</span>
               <div className="flex gap-1">
-                {colorScale.map((cls, i) => (
-                  <div key={i} className={`w-4 h-3 rounded ${cls} border border-gray-200`} />
-                ))}
+                {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
+                {/* The color prop is now directly used for the completed days. */}
+                {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
               </div>
               <span className="text-xs text-gray-400 font-semibold">More</span>
             </div>

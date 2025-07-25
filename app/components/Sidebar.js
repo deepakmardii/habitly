@@ -8,6 +8,7 @@ import { Separator } from "../../components/ui/separator";
 import { Menu, Plus, LayoutDashboard, ListTodo, BarChart2, Settings, Gem, Clock } from "lucide-react";
 import { Toaster } from "sonner";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 export default function Sidebar() {
   const [showModal, setShowModal] = useState(false);
@@ -89,7 +90,7 @@ export default function Sidebar() {
         onClick={() => {
           localStorage.removeItem("isLoggedIn");
           document.cookie = "isLoggedIn=false; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
-          window.location.href = "/";
+          signOut({ callbackUrl: "/" });
         }}
       >
         Logout

@@ -1,12 +1,18 @@
 import { PrismaClient } from "@prisma/client";
-import { getServerSession } from "@/app/lib/session";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 const prisma = new PrismaClient();
 
 export async function GET(req) {
-  const user = await getServerSession(req);
-  if (!user) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
     return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
+  }
+  const userEmail = session.user.email;
+  const user = await prisma.user.findUnique({ where: { email: userEmail } });
+  if (!user) {
+    return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
   }
   const userId = user.id;
   const habits = await prisma.habit.findMany({ where: { userId } });
