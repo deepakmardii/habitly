@@ -134,6 +134,7 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
               <Input id="streak_goal" type="number" min="1" max="365" value={form.streak_goal} onChange={e => setForm(f => ({...f, streak_goal: parseInt(e.target.value) || 1}))} />
             </div>
           </div>
+          {/* Reminder Time - Commented out for now
           <div className="flex flex-col gap-2">
             <Label>Reminder Time</Label>
             <Popover open={showTimePicker} onOpenChange={setShowTimePicker}>
@@ -185,6 +186,7 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
               </PopoverContent>
             </Popover>
           </div>
+          */}
           {error && <div className="text-red-600 text-sm text-center">{error}</div>}
           <div className="flex gap-4 mt-6">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>

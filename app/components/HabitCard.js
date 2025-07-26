@@ -128,7 +128,9 @@ function HabitCard({
       </div>
       {/* Reminder and Status */}
       <div className="flex items-center justify-between mt-auto pt-1">
+        {/* Reminder Time - Commented out for now
         <span className="text-sm text-gray-400 font-semibold">Reminder: {reminderTime}</span>
+        */}
         {isCompletedToday ? (
           <span className="bg-green-100 text-green-700 text-sm font-semibold px-4 py-1 rounded-full">Completed Today</span>
         ) : (

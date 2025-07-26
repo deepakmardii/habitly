@@ -136,7 +136,7 @@ export default function Analytics() {
               {!summary ? "-" : summary.averageStreak}
             </div>
             <div className="text-xs text-blue-600 font-semibold">
-              {!summary ? "" : `+${summary.averageStreakImprovement} days improvement`}
+              {!summary ? "" : `+${summary.averageStreakImprovement.toFixed(1)} days improvement`}
             </div>
           </CardContent>
         </Card>
