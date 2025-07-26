@@ -125,6 +125,12 @@ export async function GET(req) {
 
       // Build habit card data
       const completionPercent = Math.min(100, Math.round((completionDates.length / habit.streak_goal) * 100));
+      
+      // Check if completed today
+      const isCompletedToday = completionDates.some(date => 
+        new Date(date).toISOString().slice(0, 10) === todayStr
+      );
+      
       habitCards.push({
         title: habit.name,
         emoji: habit.emoji,
@@ -138,6 +144,8 @@ export async function GET(req) {
           : "",
         color: habit.color,
         id: habit.id,
+        completions: completionDates.map(date => date.toISOString().slice(0, 10)), // Convert to date strings
+        isCompletedToday: isCompletedToday, // Include completion status
       });
 
       // Build activity data

@@ -182,6 +182,8 @@ export default function Dashboard() {
                       color={habit.color}
                       emoji={undefined}
                       tag={undefined}
+                      completions={habit.completions} // Pass completion data
+                      isCompletedToday={habit.isCompletedToday} // Pass completion status
                       showHeader={false}
                     />
                   </div>
