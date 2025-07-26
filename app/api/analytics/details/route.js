@@ -80,20 +80,27 @@ export async function GET(req) {
     const habitPerformance = await Promise.all(habits.map(async (habit) => {
       // Get completions for this habit (from allCompletions, already in memory)
       const completions = allCompletions.filter(c => c.habitId === habit.id);
-      // Current streak (consecutive days up to today)
+      // Current streak - count consecutive days from most recent completion backwards
       let streak = 0;
       if (completions.length > 0) {
         const dates = completions
           .map((d) => new Date(d.completion_date).toISOString().slice(0, 10))
-          .sort((a, b) => b.localeCompare(a));
-        let day = new Date();
-        day.setUTCHours(0, 0, 0, 0);
+          .sort((a, b) => b.localeCompare(a)); // Sort descending (most recent first)
+        
+        // Start from the most recent completion date
+        let currentDate = new Date(dates[0]);
+        currentDate.setUTCHours(0, 0, 0, 0);
+        
+        // Count consecutive days backwards
         for (let i = 0; i < dates.length; i++) {
-          if (dates[i] === day.toISOString().slice(0, 10)) {
+          const expectedDate = new Date(currentDate);
+          expectedDate.setUTCDate(currentDate.getUTCDate() - i);
+          const expectedDateStr = expectedDate.toISOString().slice(0, 10);
+          
+          if (dates[i] === expectedDateStr) {
             streak++;
-            day.setUTCDate(day.getUTCDate() - 1);
           } else {
-            break;
+            break; // Streak broken
           }
         }
       }

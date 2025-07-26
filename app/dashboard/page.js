@@ -7,32 +7,74 @@ import { FcIdea, FcCalendar, FcSurvey, FcAlarmClock, FcTodoList, FcHighPriority 
 import { Button } from "../../components/ui/button";
 import NewHabitModal from "../components/NewHabitModal";
 
+// Loading skeleton component
+const LoadingSkeleton = () => (
+  <div className="min-h-screen flex flex-col bg-white">
+    <PageHeader title="Dashboard" subtitle="Welcome back! Here's your habit progress overview." />
+    <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 pt-8 p-4">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col items-center min-h-[140px] relative animate-pulse">
+          <div className="h-6 bg-gray-200 rounded w-24 mb-2"></div>
+          <div className="h-8 bg-gray-200 rounded w-12 mb-1"></div>
+          <div className="h-3 bg-gray-200 rounded w-20"></div>
+        </div>
+      ))}
+    </div>
+    <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 px-8">
+      <div className="md:col-span-2">
+        <div className="border border-gray-200 rounded-2xl bg-white p-8 mb-4 animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-64 mb-6"></div>
+          <div className="space-y-4">
+            {[1, 2].map((i) => (
+              <div key={i} className="h-32 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="md:col-span-1">
+        <div className="border border-gray-200 rounded-2xl bg-white p-6 mb-4 animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-48 mb-6"></div>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-16 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 export default function Dashboard() {
-  const [habits, setHabits] = useState([]);
+  const [dashboardData, setDashboardData] = useState({
+    habits: [],
+    summary: null,
+    recentActivity: []
+  });
   const [loading, setLoading] = useState(true);
-  const [summary, setSummary] = useState(null);
-  const [recentActivity, setRecentActivity] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    fetch("/api/habits")
+    // Single API call instead of three separate calls
+    fetch("/api/dashboard")
       .then((res) => res.json())
       .then((data) => {
-        setHabits(data || []);
+        setDashboardData(data);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
-    fetch("/api/habits/summary")
-      .then((res) => res.json())
-      .then((data) => setSummary(data));
-    fetch("/api/habits/activity")
-      .then((res) => res.json())
-      .then((data) => setRecentActivity(data));
+      .catch((error) => {
+        console.error('Dashboard fetch error:', error);
+        setLoading(false);
+      });
   }, []);
 
-  const activeHabits = habits;
+  const { habits, summary, recentActivity } = dashboardData;
   const safeHabits = Array.isArray(habits) ? habits : [];
   const safeRecentActivity = Array.isArray(recentActivity) ? recentActivity : [];
+
+  if (loading) {
+    return <LoadingSkeleton />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">

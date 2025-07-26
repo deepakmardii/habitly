@@ -14,12 +14,11 @@ function HabitCard({
   completionPercent,
   progressToGoal,
   reminderTime,
+  completions = [], // Accept completions data from parent
+  isCompletedToday = false, // Accept completion status from parent
   onMarkComplete,
   onDelete,
 }) {
-  const [completions, setCompletions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isCompletedToday, setIsCompletedToday] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Pick a random background color for the emoji (stable per habitId)
@@ -33,35 +32,6 @@ function HabitCard({
     return emojiBgColors[Math.abs(hash) % emojiBgColors.length];
   }, [habitId]);
 
-  // Fetch completions for heatmap and isCompletedToday only
-  useEffect(() => {
-    async function fetchCompletions() {
-      setLoading(true);
-      try {
-        if (!habitId) throw new Error("habitId is missing");
-        const res = await fetch(`/api/habits/completions?habitId=${habitId}`);
-        const data = await res.json();
-        setCompletions(Array.isArray(data) ? data.map((date) => ({ date })) : []);
-      } catch (e) {
-        setCompletions([]);
-      }
-      setLoading(false);
-    }
-    fetchCompletions();
-  }, [habitId]);
-
-  // Check if completed today
-  useEffect(() => {
-    if (!loading && completions.length > 0) {
-      const today = new Date();
-      const todayStr = today.toISOString().slice(0, 10);
-      const dates = completions.map((c) => c.date.slice(0, 10));
-      setIsCompletedToday(dates.includes(todayStr));
-    } else {
-      setIsCompletedToday(false);
-    }
-  }, [completions, loading]);
-
   // Refetch completions after marking complete
   const handleMarkComplete = async () => {
     try {
@@ -71,12 +41,9 @@ function HabitCard({
         body: JSON.stringify({ habitId }),
       });
       if (onMarkComplete) await onMarkComplete();
-      if (habitId) {
-        const res = await fetch(`/api/habits/completions?habitId=${habitId}`);
-        const data = await res.json();
-        setCompletions(Array.isArray(data) ? data.map((date) => ({ date })) : []);
-      }
-    } catch (e) {}
+    } catch (e) {
+      console.error('Error marking habit complete:', e);
+    }
   };
 
   const handleDeleteClick = () => {

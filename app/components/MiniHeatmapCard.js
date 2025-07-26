@@ -54,38 +54,18 @@ function getYearDays() {
   return days;
 }
 
-export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, completionPercent, color, showHeader = false }) {
-  const [completions, setCompletions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isCompletedToday, setIsCompletedToday] = useState(false);
-
-  useEffect(() => {
-    async function fetchCompletions() {
-      setLoading(true);
-      try {
-        if (!habitId) throw new Error("habitId is missing");
-        const res = await fetch(`/api/habits/completions?habitId=${habitId}`);
-        const data = await res.json();
-        setCompletions(Array.isArray(data) ? data.map((date) => ({ date })) : []);
-      } catch (e) {
-        setCompletions([]);
-      }
-      setLoading(false);
-    }
-    fetchCompletions();
-  }, [habitId]);
-
-  useEffect(() => {
-    if (!loading && completions.length > 0) {
-      const today = new Date();
-      const todayStr = today.toISOString().slice(0, 10);
-      const dates = completions.map((c) => c.date.slice(0, 10));
-      setIsCompletedToday(dates.includes(todayStr));
-    } else {
-      setIsCompletedToday(false);
-    }
-  }, [completions, loading]);
-
+export default function MiniHeatmapCard({ 
+  habitId, 
+  title, 
+  emoji, 
+  tag, 
+  streak, 
+  completionPercent, 
+  color, 
+  completions = [], // Accept completions data from parent
+  isCompletedToday = false, // Accept completion status from parent
+  showHeader = false 
+}) {
   // Emoji background color (stable per habitId)
   const emojiBgColors = [
     "bg-blue-100", "bg-green-100", "bg-yellow-100", "bg-pink-100", "bg-purple-100", "bg-orange-100", "bg-red-100", "bg-teal-100", "bg-indigo-100"
@@ -97,7 +77,7 @@ export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, co
     return emojiBgColors[Math.abs(hash) % emojiBgColors.length];
   })();
 
-  const completedSet = new Set(completions.map(c => c.date.slice(0, 10)));
+  const completedSet = new Set(completions.map(c => c.slice(0, 10))); // Handle date strings directly
   const days = getYearDays();
   const weeks = Array.from({ length: 53 }, (_, w) => days.slice(w * 7, w * 7 + 7));
 
@@ -147,42 +127,38 @@ export default function MiniHeatmapCard({ habitId, title, emoji, tag, streak, co
       )}
       {/* Heatmap */}
       <div className="w-full max-w-full overflow-x-auto">
-        {loading ? (
-          <div className="text-gray-400 text-sm">Loading heatmap...</div>
-        ) : (
-          <div className="flex flex-col">
-            <div className="flex items-center justify-between mb-1 px-1">
-              <span className="text-xs text-gray-400 font-semibold">Less</span>
-              <div className="flex gap-1">
-                {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
-                {/* The color prop is now directly used for the completed days. */}
-                {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
-              </div>
-              <span className="text-xs text-gray-400 font-semibold">More</span>
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between mb-1 px-1">
+            <span className="text-xs text-gray-400 font-semibold">Less</span>
+            <div className="flex gap-1">
+              {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
+              {/* The color prop is now directly used for the completed days. */}
+              {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
             </div>
-            <div className="flex">
-              {weeks.map((week, wi) => (
-                <div key={wi} className="flex flex-col">
-                  {week.map((day, di) => (
-                    <Tooltip key={day}>
-                      <TooltipTrigger asChild>
-                        <div
-                          className={`w-4 h-4 m-0.5 rounded ${getShade(day)} border border-gray-200 transition-all duration-100 hover:ring-2 hover:ring-gray-700 hover:ring-offset-1`}
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent sideOffset={4}>
-                        <div className="flex flex-col items-center">
-                          <span className="font-semibold">{day}</span>
-                          <span className="text-xs text-gray-400">{completedSet.has(day) ? "Completed" : "Not completed"}</span>
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
-              ))}
-            </div>
+            <span className="text-xs text-gray-400 font-semibold">More</span>
           </div>
-        )}
+          <div className="flex">
+            {weeks.map((week, wi) => (
+              <div key={wi} className="flex flex-col">
+                {week.map((day, di) => (
+                  <Tooltip key={day}>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={`w-4 h-4 m-0.5 rounded ${getShade(day)} border border-gray-200 transition-all duration-100 hover:ring-2 hover:ring-gray-700 hover:ring-offset-1`}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent sideOffset={4}>
+                      <div className="flex flex-col items-center">
+                        <span className="font-semibold">{day}</span>
+                        <span className="text-xs text-gray-400">{completedSet.has(day) ? "Completed" : "Not completed"}</span>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

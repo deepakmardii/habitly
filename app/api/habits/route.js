@@ -202,20 +202,27 @@ export async function GET(req) {
           orderBy: { completion_date: "asc" },
         });
         allCompletions.push(...completions.map(c => c.completion_date));
-        // Streak calculation (UTC)
+        // Streak calculation - count consecutive days from most recent completion backwards
         let streak = 0;
         if (completions.length > 0) {
           const dates = completions
             .map((d) => new Date(d.completion_date).toISOString().slice(0, 10))
-            .sort((a, b) => b.localeCompare(a));
-          let day = new Date();
-          day.setUTCHours(0, 0, 0, 0);
+            .sort((a, b) => b.localeCompare(a)); // Sort descending (most recent first)
+          
+          // Start from the most recent completion date
+          let currentDate = new Date(dates[0]);
+          currentDate.setUTCHours(0, 0, 0, 0);
+          
+          // Count consecutive days backwards
           for (let i = 0; i < dates.length; i++) {
-            if (dates[i] === day.toISOString().slice(0, 10)) {
+            const expectedDate = new Date(currentDate);
+            expectedDate.setUTCDate(currentDate.getUTCDate() - i);
+            const expectedDateStr = expectedDate.toISOString().slice(0, 10);
+            
+            if (dates[i] === expectedDateStr) {
               streak++;
-              day.setUTCDate(day.getUTCDate() - 1);
             } else {
-              break;
+              break; // Streak broken
             }
           }
         }
@@ -260,32 +267,51 @@ export async function GET(req) {
       where: { userId },
     });
 
-    // For each habit, fetch completions and calculate stats
+    // Get all completions for this user in one query
+    const allCompletions = await prisma.habitCompletion.findMany({
+      where: { userId },
+      select: { 
+        habitId: true, 
+        completion_date: true 
+      },
+      orderBy: { completion_date: "asc" }
+    });
+
+    // Group completions by habitId for efficient lookup
+    const completionsByHabit = {};
+    allCompletions.forEach(completion => {
+      if (!completionsByHabit[completion.habitId]) {
+        completionsByHabit[completion.habitId] = [];
+      }
+      completionsByHabit[completion.habitId].push(completion.completion_date);
+    });
+
+    // For each habit, calculate stats using the grouped completions
     const habitCards = await Promise.all(
       habits.map(async (habit) => {
-        // Fetch all completion dates for this habit/user
-        const completions = await prisma.habitCompletion.findMany({
-          where: { habitId: habit.id, userId },
-          select: { completion_date: true },
-          orderBy: { completion_date: "asc" },
-        });
-        const completionDates = completions.map((c) => c.completion_date);
+        const completionDates = completionsByHabit[habit.id] || [];
 
-        // Calculate streak
+        // Calculate streak - count consecutive days from most recent completion backwards
         let streak = 0;
         if (completionDates.length > 0) {
-          // Sort dates descending
           const dates = completionDates
             .map((d) => new Date(d).toISOString().slice(0, 10))
-            .sort((a, b) => b.localeCompare(a));
-          let day = new Date();
-          day.setUTCHours(0, 0, 0, 0);
+            .sort((a, b) => b.localeCompare(a)); // Sort descending (most recent first)
+          
+          // Start from the most recent completion date
+          let currentDate = new Date(dates[0]);
+          currentDate.setUTCHours(0, 0, 0, 0);
+          
+          // Count consecutive days backwards
           for (let i = 0; i < dates.length; i++) {
-            if (dates[i] === day.toISOString().slice(0, 10)) {
+            const expectedDate = new Date(currentDate);
+            expectedDate.setUTCDate(currentDate.getUTCDate() - i);
+            const expectedDateStr = expectedDate.toISOString().slice(0, 10);
+            
+            if (dates[i] === expectedDateStr) {
               streak++;
-              day.setDate(day.getDate() - 1);
             } else {
-              break;
+              break; // Streak broken
             }
           }
         }
@@ -295,6 +321,14 @@ export async function GET(req) {
 
         // Completion percent (capped at 100%)
         const completionPercent = Math.min(100, Math.round((completionDates.length / habit.streak_goal) * 100));
+
+        // Check if completed today
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+        const todayStr = today.toISOString().slice(0, 10);
+        const isCompletedToday = completionDates.some(date => 
+          new Date(date).toISOString().slice(0, 10) === todayStr
+        );
 
         return {
           title: habit.name,
@@ -309,6 +343,8 @@ export async function GET(req) {
             : "",
           color: habit.color,
           id: habit.id,
+          completions: completionDates, // Include completion data
+          isCompletedToday, // Include today's completion status
         };
       })
     );

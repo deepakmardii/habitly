@@ -6,27 +6,27 @@ import { FaCheckCircle, FaChartLine, FaFire, FaPercent, FaArrowUp, FaArrowDown, 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from "recharts";
 
 export default function Analytics() {
-  const [details, setDetails] = useState(null);
-  const [summary, setSummary] = useState(null);
+  const [analyticsData, setAnalyticsData] = useState({
+    summary: null,
+    details: null
+  });
   const [loading, setLoading] = useState(true);
-  const [loadingSummary, setLoadingSummary] = useState(true);
 
   useEffect(() => {
-    fetch("/api/analytics/details")
+    // Single API call instead of two separate calls
+    fetch("/api/analytics")
       .then((res) => res.json())
       .then((data) => {
-        setDetails(data);
+        setAnalyticsData(data);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
-    fetch("/api/analytics/summary")
-      .then((res) => res.json())
-      .then((data) => {
-        setSummary(data);
-        setLoadingSummary(false);
-      })
-      .catch(() => setLoadingSummary(false));
+      .catch((error) => {
+        console.error('Error fetching analytics:', error);
+        setLoading(false);
+      });
   }, []);
+
+  const { summary, details } = analyticsData;
 
   // Prepare chart data
   const weeklyData = details?.weeklyCompletions?.map((count, i) => ({
@@ -35,6 +35,75 @@ export default function Analytics() {
   })) || [];
   const monthlyData = details?.monthlySuccessRate || [];
   const habits = details?.habitPerformance || [];
+
+  // Loading skeleton
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-white">
+        <PageHeader title="Analytics" subtitle="View your habit analytics and insights." showAddHabit={false} />
+        {/* 4 Analytics Cards Skeleton */}
+        <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 pt-8 p-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="relative animate-pulse">
+              <div className="absolute top-4 right-4 w-6 h-6 bg-gray-200 rounded"></div>
+              <CardHeader>
+                <div className="h-6 bg-gray-200 rounded w-32"></div>
+              </CardHeader>
+              <CardContent>
+                <div className="h-8 bg-gray-200 rounded w-16 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-40"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        {/* Charts Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+          <div className="flex flex-col gap-8">
+            <Card className="animate-pulse">
+              <CardHeader>
+                <div className="h-6 bg-gray-200 rounded w-48 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-64"></div>
+              </CardHeader>
+              <CardContent>
+                <div className="h-56 w-full bg-gray-200 rounded"></div>
+              </CardContent>
+            </Card>
+            <Card className="animate-pulse">
+              <CardHeader>
+                <div className="h-6 bg-gray-200 rounded w-40 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-72"></div>
+              </CardHeader>
+              <CardContent>
+                <div className="h-56 w-full bg-gray-200 rounded"></div>
+              </CardContent>
+            </Card>
+          </div>
+          <Card className="animate-pulse">
+            <CardHeader>
+              <div className="h-6 bg-gray-200 rounded w-36 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-56"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-6">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-gray-200 rounded"></div>
+                      <div className="h-4 bg-gray-200 rounded flex-1"></div>
+                      <div className="h-4 bg-gray-200 rounded w-20"></div>
+                      <div className="h-4 bg-gray-200 rounded w-12"></div>
+                    </div>
+                    <div className="h-3 bg-gray-200 rounded-full"></div>
+                    <div className="h-3 bg-gray-200 rounded w-16 ml-auto"></div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -49,10 +118,10 @@ export default function Analytics() {
           </CardHeader>
           <CardContent>
             <div className="font-bold text-3xl mb-1">
-              {loadingSummary || !summary ? "-" : summary.totalCompletions}
+              {!summary ? "-" : summary.totalCompletions}
             </div>
             <div className="text-xs text-green-600 font-semibold">
-              {loadingSummary || !summary ? "" : `${summary.totalCompletionsChange >= 0 ? "+" : ""}${summary.totalCompletionsChange}% from last month`}
+              {!summary ? "" : `${summary.totalCompletionsChange >= 0 ? "+" : ""}${summary.totalCompletionsChange}% from last month`}
             </div>
           </CardContent>
         </Card>
@@ -64,10 +133,10 @@ export default function Analytics() {
           </CardHeader>
           <CardContent>
             <div className="font-bold text-3xl mb-1">
-              {loadingSummary || !summary ? "-" : summary.averageStreak}
+              {!summary ? "-" : summary.averageStreak}
             </div>
             <div className="text-xs text-blue-600 font-semibold">
-              {loadingSummary || !summary ? "" : `+${summary.averageStreakImprovement} days improvement`}
+              {!summary ? "" : `+${summary.averageStreakImprovement} days improvement`}
             </div>
           </CardContent>
         </Card>
@@ -79,10 +148,10 @@ export default function Analytics() {
           </CardHeader>
           <CardContent>
             <div className="font-bold text-3xl mb-1">
-              {loadingSummary || !summary ? "-" : summary.bestStreak}
+              {!summary ? "-" : summary.bestStreak}
             </div>
             <div className="text-xs text-gray-600 font-semibold">
-              {loadingSummary || !summary ? "" : summary.bestStreakHabit ? summary.bestStreakHabit : "-"}
+              {!summary ? "" : summary.bestStreakHabit ? summary.bestStreakHabit : "-"}
             </div>
           </CardContent>
         </Card>
@@ -94,10 +163,10 @@ export default function Analytics() {
           </CardHeader>
           <CardContent>
             <div className="font-bold text-3xl mb-1">
-              {loadingSummary || !summary ? "-" : `${summary.successRate}%`}
+              {!summary ? "-" : `${summary.successRate}%`}
             </div>
             <div className="text-xs text-green-600 font-semibold">
-              {loadingSummary || !summary ? "" : `${summary.successRateChange >= 0 ? "+" : ""}${summary.successRateChange}% this week`}
+              {!summary ? "" : `${summary.successRateChange >= 0 ? "+" : ""}${summary.successRateChange}% this week`}
             </div>
           </CardContent>
         </Card>
@@ -155,27 +224,33 @@ export default function Analytics() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-6">
-                {habits.map((habit, idx) => (
-                  <div key={idx} className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl mr-2">{habit.emoji}</span>
-                      <span className="font-semibold text-base text-gray-900 flex-1">{habit.name}</span>
-                      <span className="text-xs font-semibold text-gray-600 bg-gray-100 rounded px-2 py-1 mr-2">
-                        {habit.streak} day streak
-                      </span>
-                      <span className={`text-xs font-semibold flex items-center gap-1 ${habit.trend > 0 ? "text-green-600" : habit.trend < 0 ? "text-red-500" : "text-gray-400"}`}>
-                        {habit.trend > 0 && <FaArrowUp />} {habit.trend < 0 && <FaArrowDown />} {habit.trend === 0 && <FaMinus />} {habit.trend > 0 ? "+" : ""}{habit.trend}%
-                      </span>
-                    </div>
-                    <div className="w-full h-3 bg-gray-200 rounded-full mt-2 mb-1">
-                      <div
-                        className="h-3 rounded-full bg-gray-900 transition-all"
-                        style={{ width: `${habit.completionRate}%` }}
-                      ></div>
-                    </div>
-                    <div className="text-xs text-gray-700 font-semibold text-right">{habit.completionRate}%</div>
+                {habits.length === 0 ? (
+                  <div className="text-center text-gray-500 py-8">
+                    No habits found. Create some habits to see analytics here.
                   </div>
-                ))}
+                ) : (
+                  habits.map((habit, idx) => (
+                    <div key={idx} className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl mr-2">{habit.emoji}</span>
+                        <span className="font-semibold text-base text-gray-900 flex-1">{habit.name}</span>
+                        <span className="text-xs font-semibold text-gray-600 bg-gray-100 rounded px-2 py-1 mr-2">
+                          {habit.streak} day streak
+                        </span>
+                        <span className={`text-xs font-semibold flex items-center gap-1 ${habit.trend > 0 ? "text-green-600" : habit.trend < 0 ? "text-red-500" : "text-gray-400"}`}>
+                          {habit.trend > 0 && <FaArrowUp />} {habit.trend < 0 && <FaArrowDown />} {habit.trend === 0 && <FaMinus />} {habit.trend > 0 ? "+" : ""}{habit.trend}%
+                        </span>
+                      </div>
+                      <div className="w-full h-3 bg-gray-200 rounded-full mt-2 mb-1">
+                        <div
+                          className="h-3 rounded-full bg-gray-900 transition-all"
+                          style={{ width: `${habit.completionRate}%` }}
+                        ></div>
+                      </div>
+                      <div className="text-xs text-gray-700 font-semibold text-right">{habit.completionRate}%</div>
+                    </div>
+                  ))
+                )}
               </div>
             </CardContent>
           </Card>
