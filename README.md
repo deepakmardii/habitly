@@ -200,3 +200,160 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - UI components from [shadcn/ui](https://ui.shadcn.com/)
 - Icons from [Lucide React](https://lucide.dev/)
 - Charts powered by [Recharts](https://recharts.org/)
+
+# Habitly Pricing Plans 💰
+
+Choose the perfect plan for your habit tracking journey.
+
+## 🆓 Free Plan
+**Perfect for getting started with habit tracking**
+
+### ✅ **Core Features**
+- [x] **Up to 5 habits** - Track your most important daily routines
+- [x] **Daily habit tracking** - Mark habits as complete with one click
+- [x] **Streak counting** - See your consecutive days for each habit
+- [x] **Heatmap visualization** - 4-week completion history
+- [x] **Basic analytics** - Completion statistics and trends
+- [x] **Google OAuth login** - Secure authentication
+- [x] **Responsive design** - Works on desktop and mobile
+- [x] **Real-time updates** - Instant feedback when marking habits
+- [x] **Loading states** - Smooth user experience with skeleton screens
+
+### 📊 **Analytics Features**
+- [x] **Current streak** for each habit
+- [x] **Total completions** count
+- [x] **Dashboard overview** with habit summary
+- [x] **Weekly completion tracking** - See patterns over time
+- [x] **Monthly success rate** - Track your progress monthly
+- [x] **Habit performance comparison** - Compare different habits
+- [x] **Average streak improvement** - See your progress trends
+
+### 🎨 **User Experience**
+- [x] **Modern UI** with Tailwind CSS and shadcn/ui components
+- [x] **Custom habit names** and descriptions
+- [x] **Emoji support** for habit icons
+- [x] **Clean, intuitive interface**
+- [x] **Search & filter** functionality (UI implemented)
+- [x] **Habit editing** - Modify existing habits
+- [x] **Habit deletion** - Remove unwanted habits
+
+---
+
+## ⭐ Pro Plan
+**Unlock unlimited potential for serious habit building**
+
+### ✅ **Everything in Free +**
+
+#### 🚀 **Unlimited Habits**
+- [ ] **Unlimited habit creation** - Track as many habits as you want
+- [ ] **Advanced habit organization** - Better categorization
+
+#### 📊 **Enhanced Analytics**
+- [ ] **Extended heatmaps** - Longer period visualization
+- [ ] **Detailed streak history** - See streaks over months/years
+- [ ] **Advanced trend analysis** - Deeper insights into patterns
+- [ ] **Export analytics data** - Download your progress reports
+
+#### 📁 **Data Management**
+- [ ] **Export habit data** - Download your data as CSV/JSON
+- [ ] **Import habits** - Import from other apps or CSV files
+- [ ] **Data backup** - Automatic cloud backup
+
+#### 🏷️ **Custom Categories & Tags**
+- [ ] **Custom categories** - Create your own habit categories
+- [ ] **Color-coded tags** - Organize habits with colors
+- [ ] **Advanced filtering** - Filter habits by category/tag
+
+#### 📋 **Habit Templates**
+- [ ] **Pre-made templates** - Common habits like "Drink Water", "Read 10 pages"
+- [ ] **Quick habit creation** - One-click habit setup
+
+#### 🌟 **Gamification**
+- [ ] **Achievement badges** - Earn badges for milestones
+- [ ] **Level system** - Level up as you build habits
+- [ ] **Streak milestones** - Celebrate your achievements
+
+#### 📝 **Notes & Journaling**
+- [ ] **Daily notes** - Add reflections to each habit
+- [ ] **Mood tracking** - Track how you feel with each habit
+
+#### 🎨 **Customization**
+- [ ] **Dark mode** - Eye-friendly dark theme
+- [ ] **Custom themes** - Choose your color scheme
+- [ ] **Personalized dashboard** - Customize your layout
+
+#### 🔒 **Security & Support**
+- [ ] **Two-factor authentication** - Enhanced account security
+- [ ] **Priority support** - Faster customer service
+
+---
+
+## 💳 **Pricing**
+
+### Free Plan
+**$0/month**
+- Perfect for beginners
+- No credit card required
+- Start tracking today
+
+### Pro Plan
+**$9.99/month** or **$99/year** *(Save 17%)*
+- All advanced features
+- Cancel anytime
+- 30-day money-back guarantee
+
+---
+
+## 🔄 **Plan Comparison**
+
+| Feature | Free | Pro |
+|---------|------|-----|
+| **Habits** | Up to 5 | Unlimited |
+| **Basic Analytics** | ✅ | ✅ |
+| **Heatmap Visualization** | ✅ | ✅ |
+| **Streak Tracking** | ✅ | ✅ |
+| **Dashboard Overview** | ✅ | ✅ |
+| **Advanced Analytics** | ❌ | ✅ |
+
+---
+
+## 🚀 **Coming Soon Features**
+
+These features are planned for future development:
+
+- **Reminders & Notifications** - Custom daily reminders
+- **Mobile App** - Native iOS and Android apps
+- **Social Features** - Share progress and join communities
+- **Integrations** - Calendar sync and API access
+- **Advanced Customization** - More UI personalization options
+
+---
+
+## ❓ **Frequently Asked Questions**
+
+### **Can I upgrade from Free to Pro?**
+Yes! You can upgrade anytime from your account settings.
+
+### **Can I cancel my Pro subscription?**
+Absolutely. Cancel anytime and keep access until the end of your billing period.
+
+### **Is there a free trial for Pro?**
+Yes! Try Pro free for 7 days with no commitment.
+
+### **Do you offer refunds?**
+Yes, we offer a 30-day money-back guarantee for Pro subscriptions.
+
+### **Can I export my data if I cancel?**
+Yes, Pro users can export all their data before canceling.
+
+---
+
+## 🎯 **Ready to Upgrade?**
+
+Start your free trial today and unlock unlimited habit tracking!
+
+[**Start Free Trial**](#) | [**View All Features**](#) | [**Contact Support**](#)
+
+---
+
+*Last updated: January 2025*
