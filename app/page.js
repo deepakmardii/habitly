@@ -698,7 +698,7 @@ export default function LandingPage() {
                   />
                 </svg>
               </div>
-              <span className="text-xl font-bold">HabitFlow</span>
+              <span className="text-xl font-bold">Habitly</span>
             </div>
 
             {/* Desktop Navigation */}
