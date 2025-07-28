@@ -22,6 +22,12 @@ model User {
   image              String?
   accounts           Account[]
   sessions           Session[]
+  // Subscription fields for DodoPayments
+  subscriptionStatus   String      @default("free") // free, trialing, active, canceled, past_due
+  subscriptionPlan     String      @default("free") // free, pro
+  subscriptionExpiresAt DateTime?
+  subscriptionId       String?
+  customerId           String? // DodoPayments customer ID
 }
 
 // Habits table

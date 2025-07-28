@@ -115,10 +115,6 @@ export default function Sidebar() {
         onSubmit={async data => {
           setShowModal(false);
           try {
-            const realUserId = localStorage.getItem("userId");
-            if (realUserId) {
-              document.cookie = `userId=${realUserId}; path=/; SameSite=Lax`;
-            }
             const res = await fetch("/api/habits", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -170,9 +166,10 @@ export default function Sidebar() {
         variant="destructive"
         className="w-full mt-auto mb-2 cursor-pointer"
         onClick={() => {
-          localStorage.removeItem("isLoggedIn");
-          document.cookie = "isLoggedIn=false; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
-          signOut({ callbackUrl: "/" });
+          signOut({ 
+            callbackUrl: "/",
+            redirect: true 
+          });
         }}
       >
         Logout

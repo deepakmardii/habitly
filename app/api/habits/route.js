@@ -117,6 +117,19 @@ export async function POST(req) {
         status: 401,
       });
     }
+
+    // Check subscription limits for free users
+    if (user.subscriptionPlan === 'free') {
+      const habitCount = await prisma.habit.count({ where: { userId } });
+      if (habitCount >= 5) {
+        return new Response(JSON.stringify({ 
+          error: "Free plan limit reached. Upgrade to Pro for unlimited habits.",
+          limitReached: true,
+          currentHabits: habitCount,
+          maxHabits: 5
+        }), { status: 403 });
+      }
+    }
     const habit = await prisma.habit.create({
       data: {
         userId,

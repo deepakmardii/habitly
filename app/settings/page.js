@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { FcStatistics } from "react-icons/fc";
 import PageHeader from "../components/PageHeader";
+import SubscriptionManager from "../components/SubscriptionManager";
 
 export default function Settings() {
   const [profile, setProfile] = useState({ name: "", email: "", joined: "" });
@@ -87,6 +88,15 @@ export default function Settings() {
               Member since {profile.joined ? profile.joined : "-"}
             </span>
           </div>
+        </Card>
+        
+        {/* Subscription Management */}
+        <Card className="p-8 mt-6 w-full">
+          <h2 className="text-2xl font-bold flex items-center gap-2 mb-1">
+            <span>💳</span> Subscription & Billing
+          </h2>
+          <p className="text-gray-500 mb-6">Manage your subscription plan and billing information</p>
+          <SubscriptionManager />
         </Card>
       </div>
     </div>

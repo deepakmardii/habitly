@@ -1,11 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from "react";
 import PageHeader from "../components/PageHeader";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import MiniHeatmapCard from "../components/MiniHeatmapCard";
+import NewHabitModal from "../components/NewHabitModal";
+import { Button } from "../../components/ui/button";
+import { Plus } from "lucide-react";
 import { FaCalendarAlt, FaClock, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { FcIdea, FcCalendar, FcSurvey, FcAlarmClock, FcTodoList, FcHighPriority } from "react-icons/fc";
-import { Button } from "../../components/ui/button";
-import NewHabitModal from "../components/NewHabitModal";
 
 // Loading skeleton component
 const LoadingSkeleton = () => (
@@ -46,6 +49,7 @@ const LoadingSkeleton = () => (
 );
 
 export default function Dashboard() {
+  const { data: session, status } = useSession();
   const [dashboardData, setDashboardData] = useState({
     habits: [],
     summary: null,
@@ -54,8 +58,21 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
 
+  // Debug authentication
   useEffect(() => {
-    // Single API call instead of three separate calls
+    console.log('Dashboard - Session status:', status);
+    console.log('Dashboard - Session data:', session);
+  }, [session, status]);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    
+    if (status === 'unauthenticated') {
+      console.log('User is not authenticated');
+      setLoading(false);
+      return;
+    }
+
     fetch("/api/dashboard")
       .then((res) => res.json())
       .then((data) => {
@@ -66,15 +83,30 @@ export default function Dashboard() {
         console.error('Dashboard fetch error:', error);
         setLoading(false);
       });
-  }, []);
+  }, [status]);
+
+  // Show loading or authentication message
+  if (status === 'loading') {
+    return <LoadingSkeleton />;
+  }
+
+  if (status === 'unauthenticated') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Not Authenticated</h1>
+          <p className="text-gray-600 mb-4">Please log in to access the dashboard.</p>
+          <a href="/login" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Go to Login
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   const { habits, summary, recentActivity } = dashboardData;
   const safeHabits = Array.isArray(habits) ? habits : [];
   const safeRecentActivity = Array.isArray(recentActivity) ? recentActivity : [];
-
-  if (loading) {
-    return <LoadingSkeleton />;
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">

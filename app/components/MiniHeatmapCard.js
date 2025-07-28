@@ -127,38 +127,38 @@ export default function MiniHeatmapCard({
       )}
       {/* Heatmap */}
       <div className="w-full max-w-full overflow-x-auto">
-        <div className="flex flex-col">
-          <div className="flex items-center justify-between mb-1 px-1">
-            <span className="text-xs text-gray-400 font-semibold">Less</span>
-            <div className="flex gap-1">
-              {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
-              {/* The color prop is now directly used for the completed days. */}
-              {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
-            </div>
-            <span className="text-xs text-gray-400 font-semibold">More</span>
-          </div>
-          <div className="flex">
-            {weeks.map((week, wi) => (
-              <div key={wi} className="flex flex-col">
-                {week.map((day, di) => (
-                  <Tooltip key={day}>
-                    <TooltipTrigger asChild>
-                      <div
-                        className={`w-4 h-4 m-0.5 rounded ${getShade(day)} border border-gray-200 transition-all duration-100 hover:ring-2 hover:ring-gray-700 hover:ring-offset-1`}
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent sideOffset={4}>
-                      <div className="flex flex-col items-center">
-                        <span className="font-semibold">{day}</span>
-                        <span className="text-xs text-gray-400">{completedSet.has(day) ? "Completed" : "Not completed"}</span>
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between mb-1 px-1">
+              <span className="text-xs text-gray-400 font-semibold">Less</span>
+              <div className="flex gap-1">
+                {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
+                {/* The color prop is now directly used for the completed days. */}
+                {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
               </div>
-            ))}
+              <span className="text-xs text-gray-400 font-semibold">More</span>
+            </div>
+            <div className="flex">
+              {weeks.map((week, wi) => (
+                <div key={wi} className="flex flex-col">
+                  {week.map((day, di) => (
+                    <Tooltip key={day}>
+                      <TooltipTrigger asChild>
+                        <div
+                          className={`w-4 h-4 m-0.5 rounded ${getShade(day)} border border-gray-200 transition-all duration-100 hover:ring-2 hover:ring-gray-700 hover:ring-offset-1`}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent sideOffset={4}>
+                        <div className="flex flex-col items-center">
+                          <span className="font-semibold">{day}</span>
+                          <span className="text-xs text-gray-400">{completedSet.has(day) ? "Completed" : "Not completed"}</span>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
       </div>
     </div>
   );

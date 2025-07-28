@@ -329,8 +329,8 @@ export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleGetStarted = () => {
-    // Redirect to dashboard or signup
-    window.location.href = "/"
+    // Trigger Google sign-in
+    signIn("google", { callbackUrl: "/dashboard" });
   }
 
   const handleNewsletterSignup = (e) => {

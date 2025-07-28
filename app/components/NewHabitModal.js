@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { X, Clock, Check } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover";
 import { toast } from "sonner";
+import { useSubscription } from "../hooks/useSubscription";
+import UpgradePrompt from "./UpgradePrompt";
 
 const emojis = [
   "💪", "📚", "🏃", "🧘", "🍎", "💡", "🎨", "💰", "👥", "🛠", "🎵", "📝", "🌱", "🧑‍💻", "🏆"
@@ -17,6 +19,7 @@ const tags = [
 ];
 
 export default function NewHabitModal({ open, onClose, onSubmit }) {
+  const { subscription, canCreateHabit } = useSubscription();
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -28,6 +31,7 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
   });
   const [error, setError] = useState("");
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
 
   function validate(form) {
     if (!form.name || form.name.length < 2 || form.name.length > 50) return "Name is required (2-50 chars)";
@@ -61,12 +65,24 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
           const err = validate(form);
           if (err) { setError(err); return; }
           setError("");
+          
+          // Check subscription limits
+          if (!canCreateHabit()) {
+            setShowUpgradePrompt(true);
+            return;
+          }
+          
           try {
             await onSubmit(form);
             toast.success("Habit created!");
             onClose();
           } catch (e) {
+            // Check if it's a subscription limit error
+            if (e.message && e.message.includes('limit reached')) {
+              setShowUpgradePrompt(true);
+            } else {
             toast.error("Failed to create habit: " + (e.message || e));
+            }
           }
         }}>
           <div className="flex flex-col gap-2">
@@ -193,6 +209,28 @@ export default function NewHabitModal({ open, onClose, onSubmit }) {
             <Button type="submit" className="flex-1 bg-blue-900 hover:bg-blue-800 text-white">Create Habit</Button>
           </div>
         </form>
+        
+        {/* Upgrade Prompt Modal */}
+        {showUpgradePrompt && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md relative">
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="absolute top-4 right-4 text-gray-700 hover:bg-gray-200 rounded-full"
+                onClick={() => setShowUpgradePrompt(false)}
+              >
+                <X className="w-6 h-6" />
+              </Button>
+              <UpgradePrompt 
+                title="Habit Limit Reached"
+                description="You've reached the free plan limit of 5 habits. Upgrade to Pro for unlimited habits!"
+                variant="default"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,18 +1,16 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const { data: session, status } = useSession();
 
-  useEffect(() => {
-    const checkLogin = () => {
-      setLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+  const handleLogout = async () => {
+    await signOut({ 
+      callbackUrl: "/",
+      redirect: true 
+    });
     };
-    checkLogin();
-    window.addEventListener("storage", checkLogin);
-    return () => window.removeEventListener("storage", checkLogin);
-  }, []);
 
   return (
     <nav className="w-full flex items-center justify-between py-4 px-6 bg-white shadow-sm dark:bg-black dark:text-white">
@@ -20,17 +18,13 @@ export default function Navbar() {
         Habitly
       </div>
       <div className="flex gap-6">
-        {loggedIn && (
+        {status === 'authenticated' && session?.user && (
           <>
             <Link href="/dashboard" className="hover:underline">
               Dashboard
             </Link>
             <button
-              onClick={() => {
-                localStorage.removeItem("isLoggedIn");
-                document.cookie = "isLoggedIn=false; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
-                window.location.href = "/";
-              }}
+              onClick={handleLogout}
               className="hover:underline text-red-600 ml-4"
             >
               Logout

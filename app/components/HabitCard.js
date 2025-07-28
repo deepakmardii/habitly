@@ -43,7 +43,7 @@ function HabitCard({
       if (onMarkComplete) await onMarkComplete();
     } catch (e) {
       console.error('Error marking habit complete:', e);
-    }
+      }
   };
 
   const handleDeleteClick = () => {
