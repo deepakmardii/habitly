@@ -2,9 +2,13 @@
 
 import { SessionProvider } from "next-auth/react";
 import "../app/instrumentation-client";
-import usePostHogIdentify from "./hooks/usePostHogIdentify";
+import PostHogIdentify from "./components/PostHogIdentify";
 
 export default function Providers({ children }) {
-  usePostHogIdentify();
-  return <SessionProvider>{children}</SessionProvider>;
+  return (
+    <SessionProvider>
+      <PostHogIdentify />
+      {children}
+    </SessionProvider>
+  );
 }
