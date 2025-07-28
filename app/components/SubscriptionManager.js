@@ -1,24 +1,30 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useSubscription } from '../hooks/useSubscription';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import { Alert, AlertDescription } from '../../components/ui/alert';
-import { Crown, Zap, X, CheckCircle, AlertTriangle } from 'lucide-react';
+import { useState } from "react";
+import { useSubscription } from "../hooks/useSubscription";
+import { Button } from "../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Alert, AlertDescription } from "../../components/ui/alert";
+import { Crown, Zap, X, CheckCircle, AlertTriangle } from "lucide-react";
 
 export default function SubscriptionManager() {
-  const { 
-    subscription, 
-    loading, 
-    error, 
-    startSubscription, 
+  const {
+    subscription,
+    loading,
+    error,
+    startSubscription,
     cancelSubscription,
     canCreateHabit,
-    getUpgradeMessage 
+    getUpgradeMessage,
   } = useSubscription();
-  
+
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
 
@@ -40,9 +46,7 @@ export default function SubscriptionManager() {
     return (
       <Alert variant="destructive">
         <AlertTriangle className="h-4 w-4" />
-        <AlertDescription>
-          Error loading subscription: {error}
-        </AlertDescription>
+        <AlertDescription>Error loading subscription: {error}</AlertDescription>
       </Alert>
     );
   }
@@ -56,22 +60,26 @@ export default function SubscriptionManager() {
       setIsUpgrading(true);
       await startSubscription();
     } catch (error) {
-      console.error('Upgrade failed:', error);
+      console.error("Upgrade failed:", error);
     } finally {
       setIsUpgrading(false);
     }
   };
 
   const handleCancel = async () => {
-    if (!confirm('Are you sure you want to cancel your subscription? You\'ll lose access to Pro features.')) {
+    if (
+      !confirm(
+        "Are you sure you want to cancel your subscription? You'll lose access to Pro features."
+      )
+    ) {
       return;
     }
-    
+
     try {
       setIsCanceling(true);
       await cancelSubscription();
     } catch (error) {
-      console.error('Cancel failed:', error);
+      console.error("Cancel failed:", error);
     } finally {
       setIsCanceling(false);
     }
@@ -81,25 +89,25 @@ export default function SubscriptionManager() {
   const handleManualActivate = async () => {
     try {
       setIsUpgrading(true);
-      const response = await fetch('/api/manual-update-subscription', {
-        method: 'POST',
+      const response = await fetch("/api/manual-update-subscription", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to activate subscription');
+        throw new Error("Failed to activate subscription");
       }
-      
+
       const data = await response.json();
-      console.log('Manual activation result:', data);
-      
+      console.log("Manual activation result:", data);
+
       // Refresh subscription status
       window.location.reload();
     } catch (error) {
-      console.error('Manual activation failed:', error);
-      alert('Failed to activate subscription: ' + error.message);
+      console.error("Manual activation failed:", error);
+      alert("Failed to activate subscription: " + error.message);
     } finally {
       setIsUpgrading(false);
     }
@@ -107,21 +115,31 @@ export default function SubscriptionManager() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'trialing': return 'bg-blue-100 text-blue-800';
-      case 'past_due': return 'bg-yellow-100 text-yellow-800';
-      case 'canceled': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "trialing":
+        return "bg-blue-100 text-blue-800";
+      case "past_due":
+        return "bg-yellow-100 text-yellow-800";
+      case "canceled":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'active': return <CheckCircle className="h-4 w-4" />;
-      case 'trialing': return <Zap className="h-4 w-4" />;
-      case 'past_due': return <AlertTriangle className="h-4 w-4" />;
-      case 'canceled': return <X className="h-4 w-4" />;
-      default: return <X className="h-4 w-4" />;
+      case "active":
+        return <CheckCircle className="h-4 w-4" />;
+      case "trialing":
+        return <Zap className="h-4 w-4" />;
+      case "past_due":
+        return <AlertTriangle className="h-4 w-4" />;
+      case "canceled":
+        return <X className="h-4 w-4" />;
+      default:
+        return <X className="h-4 w-4" />;
     }
   };
 
@@ -130,13 +148,13 @@ export default function SubscriptionManager() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            {subscription.plan === 'pro' ? (
+            {subscription.plan === "pro" ? (
               <>
                 <Crown className="h-5 w-5 text-yellow-500" />
                 Pro Plan
               </>
             ) : (
-              'Free Plan'
+              "Free Plan"
             )}
           </CardTitle>
           <CardDescription>
@@ -150,27 +168,31 @@ export default function SubscriptionManager() {
             <Badge className={getStatusColor(subscription.status)}>
               <span className="flex items-center gap-1">
                 {getStatusIcon(subscription.status)}
-                {subscription.status.replace('_', ' ')}
+                {subscription.status.replace("_", " ")}
               </span>
             </Badge>
           </div>
 
           {/* Trial Info */}
-          {subscription.status === 'trialing' && subscription.trialDaysRemaining > 0 && (
-            <Alert>
-              <Zap className="h-4 w-4" />
-              <AlertDescription>
-                <strong>{subscription.trialDaysRemaining} days</strong> remaining in your free trial. 
-                You'll be charged $6.99/month after the trial ends.
-              </AlertDescription>
-            </Alert>
-          )}
+          {subscription.status === "trialing" &&
+            subscription.trialDaysRemaining > 0 && (
+              <Alert>
+                <Zap className="h-4 w-4" />
+                <AlertDescription>
+                  <strong>{subscription.trialDaysRemaining} days</strong>{" "}
+                  remaining in your free trial. You'll be charged $6.99/month
+                  after the trial ends.
+                </AlertDescription>
+              </Alert>
+            )}
 
           {/* Expiration Date */}
           {subscription.expiresAt && (
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">
-                {subscription.status === 'trialing' ? 'Trial ends:' : 'Next billing:'}
+                {subscription.status === "trialing"
+                  ? "Trial ends:"
+                  : "Next billing:"}
               </span>
               <span className="text-sm text-gray-600">
                 {new Date(subscription.expiresAt).toLocaleDateString()}
@@ -196,33 +218,33 @@ export default function SubscriptionManager() {
 
           {/* Action Buttons */}
           <div className="flex gap-2 pt-2">
-            {subscription.plan === 'free' ? (
+            {subscription.plan === "free" ? (
               <>
-                <Button 
-                  onClick={handleUpgrade} 
+                <Button
+                  onClick={handleUpgrade}
                   disabled={isUpgrading}
                   className="flex-1"
                 >
-                  {isUpgrading ? 'Processing...' : 'Upgrade to Pro'}
+                  {isUpgrading ? "Processing..." : "Upgrade to Pro"}
                 </Button>
                 {/* Temporary button for testing */}
-                <Button 
+                {/* <Button 
                   onClick={handleManualActivate} 
                   disabled={isUpgrading}
                   variant="outline"
                   className="text-xs"
                 >
                   {isUpgrading ? 'Activating...' : 'Test: Activate Pro'}
-                </Button>
+                </Button> */}
               </>
             ) : (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={handleCancel}
                 disabled={isCanceling}
                 className="flex-1"
               >
-                {isCanceling ? 'Processing...' : 'Cancel Subscription'}
+                {isCanceling ? "Processing..." : "Cancel Subscription"}
               </Button>
             )}
           </div>
@@ -231,7 +253,7 @@ export default function SubscriptionManager() {
           <div className="pt-4 border-t">
             <h4 className="text-sm font-medium mb-2">Plan Features:</h4>
             <ul className="text-sm text-gray-600 space-y-1">
-              {subscription.plan === 'pro' ? (
+              {subscription.plan === "pro" ? (
                 <>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-3 w-3 text-green-500" />
@@ -268,4 +290,4 @@ export default function SubscriptionManager() {
       </Card>
     </div>
   );
-} 
+}

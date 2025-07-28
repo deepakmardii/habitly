@@ -4,7 +4,7 @@ export default function DashboardLayout({ children }) {
   return (
     <>
       <Sidebar />
-      <main className="ml-64 flex-1">{children}</main>
+      <main className="flex-1 md:ml-64">{children}</main>
     </>
   );
-} 
+}

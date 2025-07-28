@@ -1,11 +1,8 @@
-"use client"
+"use client";
 
-import React from "react"
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
+import React from "react";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Calendar,
   Target,
@@ -13,66 +10,63 @@ import {
   Bell,
   Shield,
   Smartphone,
-  CheckCircle,
-  Star,
-  ArrowRight,
   Menu,
   X,
-} from "lucide-react"
-import Link from "next/link"
-import { FcGoogle } from "react-icons/fc"
-import { FaCheckCircle, FaPlay } from "react-icons/fa"
+} from "lucide-react";
+import Link from "next/link";
+import { FcGoogle } from "react-icons/fc";
+import { FaCheckCircle, FaPlay } from "react-icons/fa";
 import { signIn } from "next-auth/react";
 
 const demoHabits = [
   { emoji: "💪", name: "Morning Exercise", percent: 85, color: "#2563eb" },
   { emoji: "📚", name: "Read 30 Minutes", percent: 92, color: "#22c55e" },
   { emoji: "🧘‍♂️", name: "Meditate", percent: 67, color: "#a21caf" },
-]
+];
 
 // Generate realistic heatmap data
 const generateHeatmapData = () => {
   return Array(53 * 7)
     .fill(0)
     .map((_, i) => {
-      const dayOfWeek = i % 7
-      const weekOfYear = Math.floor(i / 7)
+      const dayOfWeek = i % 7;
+      const weekOfYear = Math.floor(i / 7);
 
       // More activity on weekdays, less on weekends
-      const weekdayBonus = dayOfWeek < 5 ? 0.3 : 0
+      const weekdayBonus = dayOfWeek < 5 ? 0.3 : 0;
       // Gradual improvement over time
-      const progressBonus = weekOfYear * 0.01
+      const progressBonus = weekOfYear * 0.01;
 
-      const random = Math.random() + weekdayBonus + progressBonus
+      const random = Math.random() + weekdayBonus + progressBonus;
 
-      if (random > 0.8) return 3 // High activity
-      if (random > 0.6) return 2 // Medium activity
-      if (random > 0.4) return 1 // Low activity
-      return 0 // No activity
-    })
-}
+      if (random > 0.8) return 3; // High activity
+      if (random > 0.6) return 2; // Medium activity
+      if (random > 0.4) return 1; // Low activity
+      return 0; // No activity
+    });
+};
 
 function HabitFlowHero() {
-  const [heatmapData, setHeatmapData] = useState([])
-  const [animatedPercents, setAnimatedPercents] = useState([0, 0, 0])
+  const [heatmapData, setHeatmapData] = useState([]);
+  const [animatedPercents, setAnimatedPercents] = useState([0, 0, 0]);
 
   useEffect(() => {
-    setHeatmapData(generateHeatmapData())
+    setHeatmapData(generateHeatmapData());
 
     // Animate progress bars
     const timer = setTimeout(() => {
-      setAnimatedPercents(demoHabits.map((habit) => habit.percent))
-    }, 500)
-    return () => clearTimeout(timer)
-  }, [])
+      setAnimatedPercents(demoHabits.map((habit) => habit.percent));
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSignIn = () => {
     signIn("google", { callbackUrl: "/dashboard" });
-  }
+  };
 
   const handleWatchDemo = () => {
-    console.log("Opening demo...")
-  }
+    console.log("Opening demo...");
+  };
 
   return (
     <section className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 px-4 flex items-center">
@@ -92,13 +86,16 @@ function HabitFlowHero() {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 animate-pulse">
               Break Records
             </span>
-            <span className="inline-block ml-3 text-4xl animate-bounce">🎉</span>
+            <span className="inline-block ml-3 text-4xl animate-bounce">
+              🎉
+            </span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-medium">
-            Transform your life one quirky habit at a time. Visualize your progress, get gentle nudges, and celebrate
-            every streak—no matter how small!
+            Transform your life one quirky habit at a time. Visualize your
+            progress, get gentle nudges, and celebrate every streak—no matter
+            how small!
           </p>
 
           {/* CTA Buttons */}
@@ -111,13 +108,13 @@ function HabitFlowHero() {
               <FcGoogle className="text-2xl group-hover:scale-110 transition-transform" />
             </button>
 
-            <button
+            {/* <button
               onClick={handleWatchDemo}
               className="group flex items-center justify-center gap-3 px-8 py-4 bg-white hover:bg-gray-50 border-2 border-gray-200 hover:border-gray-300 text-gray-800 rounded-2xl text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95"
             >
               <FaPlay className="text-blue-600 group-hover:scale-110 transition-transform" />
               <span>Watch Demo</span>
-            </button>
+            </button> */}
           </div>
 
           {/* Trust Indicators */}
@@ -127,7 +124,10 @@ function HabitFlowHero() {
               { icon: FaCheckCircle, text: "No credit card" },
               { icon: FaCheckCircle, text: "Works everywhere" },
             ].map((item, idx) => (
-              <div key={idx} className="flex items-center gap-2 text-green-600 text-sm font-semibold">
+              <div
+                key={idx}
+                className="flex items-center gap-2 text-green-600 text-sm font-semibold"
+              >
                 <item.icon className="text-green-500" />
                 <span>{item.text}</span>
               </div>
@@ -140,7 +140,9 @@ function HabitFlowHero() {
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 w-full max-w-md border border-gray-200 transform hover:scale-105 transition-all duration-500 hover:shadow-3xl">
             {/* Card Header */}
             <div className="flex items-center justify-between mb-8">
-              <h3 className="font-bold text-xl text-gray-900">Your Habit Progress</h3>
+              <h3 className="font-bold text-xl text-gray-900">
+                Your Habit Progress
+              </h3>
               <span className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 text-xs font-bold px-4 py-2 rounded-full border border-blue-200 shadow-sm">
                 Today
               </span>
@@ -155,8 +157,12 @@ function HabitFlowHero() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-semibold text-base text-gray-900">{habit.name}</span>
-                      <span className="text-sm font-bold text-gray-600">{animatedPercents[idx]}%</span>
+                      <span className="font-semibold text-base text-gray-900">
+                        {habit.name}
+                      </span>
+                      <span className="text-sm font-bold text-gray-600">
+                        {animatedPercents[idx]}%
+                      </span>
                     </div>
                     <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
                       <div
@@ -177,7 +183,9 @@ function HabitFlowHero() {
             {/* Heatmap */}
             <div>
               <div className="flex items-center justify-between text-xs text-gray-500 font-semibold mb-4">
-                <span className="text-sm font-bold text-gray-700">Activity Heatmap</span>
+                <span className="text-sm font-bold text-gray-700">
+                  Activity Heatmap
+                </span>
                 <div className="flex items-center gap-2">
                   <span>Less</span>
                   <div className="flex gap-1">
@@ -195,15 +203,20 @@ function HabitFlowHero() {
                   {Array.from({ length: 53 }).map((_, weekIdx) => (
                     <div key={weekIdx} className="flex flex-col gap-1">
                       {Array.from({ length: 7 }).map((_, dayIdx) => {
-                        const idx = weekIdx * 7 + dayIdx
-                        const val = heatmapData[idx] || 0
+                        const idx = weekIdx * 7 + dayIdx;
+                        const val = heatmapData[idx] || 0;
                         const colors = [
                           "bg-gray-100 border-gray-200",
                           "bg-blue-200 border-blue-300",
                           "bg-blue-400 border-blue-500",
                           "bg-blue-600 border-blue-700",
-                        ]
-                        const activityLevels = ["No activity", "Low activity", "Medium activity", "High activity"]
+                        ];
+                        const activityLevels = [
+                          "No activity",
+                          "Low activity",
+                          "Medium activity",
+                          "High activity",
+                        ];
 
                         return (
                           <div
@@ -211,7 +224,7 @@ function HabitFlowHero() {
                             className={`w-3 h-3 rounded-sm border transition-all duration-200 hover:scale-125 cursor-pointer ${colors[val]}`}
                             title={`Day ${idx + 1}: ${activityLevels[val]}`}
                           />
-                        )
+                        );
                       })}
                     </div>
                   ))}
@@ -222,47 +235,53 @@ function HabitFlowHero() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 const features = [
   {
     icon: Target,
     title: "Smart Goal Setting",
-    description: "Set personalized habit goals with intelligent streak tracking and milestone celebrations.",
+    description:
+      "Set personalized habit goals with intelligent streak tracking and milestone celebrations.",
     color: "text-blue-600",
   },
   {
     icon: BarChart3,
     title: "Detailed Analytics",
-    description: "Visualize your progress with beautiful charts, heatmaps, and performance insights.",
+    description:
+      "Visualize your progress with beautiful charts, heatmaps, and performance insights.",
     color: "text-green-600",
   },
   {
     icon: Bell,
     title: "Smart Reminders",
-    description: "Never miss a habit with customizable notifications and quiet hours settings.",
+    description:
+      "Never miss a habit with customizable notifications and quiet hours settings.",
     color: "text-purple-600",
   },
   {
     icon: Calendar,
     title: "Visual Progress",
-    description: "See your consistency at a glance with GitHub-style activity heatmaps for each habit.",
+    description:
+      "See your consistency at a glance with GitHub-style activity heatmaps for each habit.",
     color: "text-orange-600",
   },
   {
     icon: Smartphone,
     title: "Cross-Platform",
-    description: "Access your habits anywhere with our responsive web app that works on all devices.",
+    description:
+      "Access your habits anywhere with our responsive web app that works on all devices.",
     color: "text-cyan-600",
   },
   {
     icon: Shield,
     title: "Privacy First",
-    description: "Your data stays private and secure with end-to-end encryption and local storage options.",
+    description:
+      "Your data stays private and secure with end-to-end encryption and local storage options.",
     color: "text-red-600",
   },
-]
+];
 
 const testimonials = [
   {
@@ -285,10 +304,11 @@ const testimonials = [
     name: "Emily Rodriguez",
     role: "Student",
     avatar: "/placeholder.svg?height=40&width=40",
-    content: "Simple, beautiful, and effective. The heatmap visualization keeps me motivated every single day.",
+    content:
+      "Simple, beautiful, and effective. The heatmap visualization keeps me motivated every single day.",
     rating: 5,
   },
-]
+];
 
 const pricingPlans = [
   {
@@ -296,7 +316,12 @@ const pricingPlans = [
     price: "$0",
     period: "forever",
     description: "Perfect for getting started with habit tracking",
-    features: ["Up to 5 habits", "Basic analytics", "Mobile notifications", "7-day history"],
+    features: [
+      "Up to 5 habits",
+      "Basic analytics",
+      "Mobile notifications",
+      "7-day history",
+    ],
     popular: false,
   },
   {
@@ -319,25 +344,31 @@ const pricingPlans = [
     price: "$12.99",
     period: "month",
     description: "Perfect for families or small teams",
-    features: ["Everything in Pro", "Up to 5 team members", "Shared habits", "Team analytics", "Admin controls"],
+    features: [
+      "Everything in Pro",
+      "Up to 5 team members",
+      "Shared habits",
+      "Team analytics",
+      "Admin controls",
+    ],
     popular: false,
   },
-]
+];
 
 export default function LandingPage() {
-  const [email, setEmail] = useState("")
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [email, setEmail] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleGetStarted = () => {
     // Trigger Google sign-in
     signIn("google", { callbackUrl: "/dashboard" });
-  }
+  };
 
   const handleNewsletterSignup = (e) => {
-    e.preventDefault()
-    console.log("Newsletter signup:", email)
-    setEmail("")
-  }
+    e.preventDefault();
+    console.log("Newsletter signup:", email);
+    setEmail("");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -346,33 +377,347 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Calendar className="h-4 w-4" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-primary-foreground">
+                <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none">
+                  <defs>
+                    <linearGradient
+                      id="habitGradient"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="100%"
+                    >
+                      <stop offset="0%" stopColor="#6366F1" />
+                      <stop offset="100%" stopColor="#8B5CF6" />
+                    </linearGradient>
+                    <linearGradient
+                      id="accentGradient"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="100%"
+                    >
+                      <stop offset="0%" stopColor="#F59E0B" />
+                      <stop offset="100%" stopColor="#EF4444" />
+                    </linearGradient>
+                    <clipPath id="hexClip">
+                      <path d="M16 2 L28 9 L28 23 L16 30 L4 23 L4 9 Z" />
+                    </clipPath>
+                  </defs>
+
+                  {/* Main hexagonal background */}
+                  <path
+                    d="M16 2 L28 9 L28 23 L16 30 L4 23 L4 9 Z"
+                    fill="url(#habitGradient)"
+                    opacity="0.9"
+                  />
+
+                  {/* Inner hexagon with pattern */}
+                  <path
+                    d="M16 6 L24 10 L24 20 L16 24 L8 20 L8 10 Z"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="1"
+                    opacity="0.8"
+                  />
+
+                  {/* Central habit tracker visualization */}
+                  <g transform="translate(16, 16)">
+                    {/* 7-day week grid */}
+                    <g opacity="0.9">
+                      {/* Row 1 */}
+                      <rect
+                        x="-9"
+                        y="-6"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="-6"
+                        y="-6"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="-3"
+                        y="-6"
+                        width="3"
+                        height="3"
+                        fill="#F59E0B"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="0"
+                        y="-6"
+                        width="3"
+                        height="3"
+                        fill="#EF4444"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="3"
+                        y="-6"
+                        width="3"
+                        height="3"
+                        fill="#6B7280"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="6"
+                        y="-6"
+                        width="3"
+                        height="3"
+                        fill="#6B7280"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="9"
+                        y="-6"
+                        width="3"
+                        height="3"
+                        fill="#6B7280"
+                        rx="0.5"
+                      />
+
+                      {/* Row 2 */}
+                      <rect
+                        x="-9"
+                        y="-3"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="-6"
+                        y="-3"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="-3"
+                        y="-3"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="0"
+                        y="-3"
+                        width="3"
+                        height="3"
+                        fill="#F59E0B"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="3"
+                        y="-3"
+                        width="3"
+                        height="3"
+                        fill="#EF4444"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="6"
+                        y="-3"
+                        width="3"
+                        height="3"
+                        fill="#6B7280"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="9"
+                        y="-3"
+                        width="3"
+                        height="3"
+                        fill="#6B7280"
+                        rx="0.5"
+                      />
+
+                      {/* Row 3 */}
+                      <rect
+                        x="-9"
+                        y="0"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="-6"
+                        y="0"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="-3"
+                        y="0"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="0"
+                        y="0"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="3"
+                        y="0"
+                        width="3"
+                        height="3"
+                        fill="#F59E0B"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="6"
+                        y="0"
+                        width="3"
+                        height="3"
+                        fill="#EF4444"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="9"
+                        y="0"
+                        width="3"
+                        height="3"
+                        fill="#6B7280"
+                        rx="0.5"
+                      />
+
+                      {/* Row 4 */}
+                      <rect
+                        x="-9"
+                        y="3"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="-6"
+                        y="3"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="-3"
+                        y="3"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="0"
+                        y="3"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="3"
+                        y="3"
+                        width="3"
+                        height="3"
+                        fill="#10B981"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="6"
+                        y="3"
+                        width="3"
+                        height="3"
+                        fill="#F59E0B"
+                        rx="0.5"
+                      />
+                      <rect
+                        x="9"
+                        y="3"
+                        width="3"
+                        height="3"
+                        fill="#EF4444"
+                        rx="0.5"
+                      />
+                    </g>
+                  </g>
+
+                  {/* Decorative corner elements */}
+                  <g opacity="0.7">
+                    {/* Top corners */}
+                    <circle cx="8" cy="8" r="1.5" fill="url(#accentGradient)" />
+                    <circle
+                      cx="24"
+                      cy="8"
+                      r="1.5"
+                      fill="url(#accentGradient)"
+                    />
+
+                    {/* Bottom corners */}
+                    <circle
+                      cx="8"
+                      cy="24"
+                      r="1.5"
+                      fill="url(#accentGradient)"
+                    />
+                    <circle
+                      cx="24"
+                      cy="24"
+                      r="1.5"
+                      fill="url(#accentGradient)"
+                    />
+                  </g>
+
+                  {/* Central highlight */}
+                  <circle cx="16" cy="16" r="2" fill="white" opacity="0.6" />
+
+                  {/* Outer glow */}
+                  <path
+                    d="M16 2 L28 9 L28 23 L16 30 L4 23 L4 9 Z"
+                    fill="none"
+                    stroke="url(#habitGradient)"
+                    strokeWidth="0.5"
+                    opacity="0.4"
+                  />
+                </svg>
               </div>
               <span className="text-xl font-bold">HabitFlow</span>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Features
-              </a>
-              <a href="#testimonials" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Testimonials
-              </a>
-              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Pricing
-              </a>
-              <Link href="/" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Dashboard
-              </Link>
               <Button onClick={handleGetStarted}>Get Started</Button>
             </div>
 
             {/* Mobile menu button */}
             <div className="md:hidden">
-              <Button variant="ghost" size="sm" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </Button>
             </div>
           </div>
@@ -381,16 +726,28 @@ export default function LandingPage() {
           {mobileMenuOpen && (
             <div className="md:hidden py-4 border-t">
               <div className="flex flex-col gap-4">
-                <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <a
+                  href="#features"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
                   Features
                 </a>
-                <a href="#testimonials" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <a
+                  href="#testimonials"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
                   Testimonials
                 </a>
-                <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <a
+                  href="#pricing"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
                   Pricing
                 </a>
-                <Link href="/" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <Link
+                  href="/"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
                   Dashboard
                 </Link>
                 <Button onClick={handleGetStarted} className="w-full">
@@ -666,5 +1023,5 @@ export default function LandingPage() {
         </div>
       </footer> */}
     </div>
-  )
+  );
 }
