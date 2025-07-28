@@ -726,7 +726,7 @@ export default function LandingPage() {
           {mobileMenuOpen && (
             <div className="md:hidden py-4 border-t">
               <div className="flex flex-col gap-4">
-                <a
+                {/* <a
                   href="#features"
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
@@ -749,7 +749,7 @@ export default function LandingPage() {
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   Dashboard
-                </Link>
+                </Link> */}
                 <Button onClick={handleGetStarted} className="w-full">
                   Get Started
                 </Button>
