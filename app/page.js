@@ -73,10 +73,28 @@ function HabitFlowHero() {
       <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center justify-between gap-16">
         {/* Left: Headline & Actions */}
         <div className="flex-1 flex flex-col items-start gap-8 max-w-2xl">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 text-sm font-semibold shadow-sm border border-blue-200 hover:shadow-md transition-shadow">
-            <span className="animate-pulse text-yellow-500">✨</span>
-            <span>New: Analytics that make you smile</span>
+          {/* Badges */}
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Product Hunt Badge */}
+            <a
+              href="https://www.producthunt.com/products/habitly?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-habitly&#0045;4"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=998773&theme=light&t=1753762081460"
+                alt="Habitly - A&#0032;modern&#0044;&#0032;analytics&#0045;powered&#0032;habit&#0032;tracker | Product Hunt"
+                style={{ width: "250px", height: "54px" }}
+                width="250"
+                height="54"
+              />
+            </a>
+
+            {/* Feature Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 text-sm font-semibold shadow-sm border border-blue-200 hover:shadow-md transition-shadow">
+              <span className="animate-pulse text-yellow-500">✨</span>
+              <span>New: Analytics that make you smile</span>
+            </div>
           </div>
 
           {/* Main Headline */}
