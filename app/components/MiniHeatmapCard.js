@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
-import { Tooltip, TooltipTrigger, TooltipContent } from "../../components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "../../components/ui/tooltip";
 
 const colorClassMap = {
   "red-600": "bg-red-600",
@@ -54,32 +58,43 @@ function getYearDays() {
   return days;
 }
 
-export default function MiniHeatmapCard({ 
-  habitId, 
-  title, 
-  emoji, 
-  tag, 
-  streak, 
-  completionPercent, 
-  color, 
+export default function MiniHeatmapCard({
+  habitId,
+  title,
+  emoji,
+  tag,
+  streak,
+  completionPercent,
+  color,
   completions = [], // Accept completions data from parent
   isCompletedToday = false, // Accept completion status from parent
-  showHeader = false 
+  showHeader = false,
 }) {
   // Emoji background color (stable per habitId)
   const emojiBgColors = [
-    "bg-blue-100", "bg-green-100", "bg-yellow-100", "bg-pink-100", "bg-purple-100", "bg-orange-100", "bg-red-100", "bg-teal-100", "bg-indigo-100"
+    "bg-blue-100",
+    "bg-green-100",
+    "bg-yellow-100",
+    "bg-pink-100",
+    "bg-purple-100",
+    "bg-orange-100",
+    "bg-red-100",
+    "bg-teal-100",
+    "bg-indigo-100",
   ];
   const emojiBg = (() => {
     if (!habitId) return emojiBgColors[0];
     let hash = 0;
-    for (let i = 0; i < habitId.length; i++) hash = habitId.charCodeAt(i) + ((hash << 5) - hash);
+    for (let i = 0; i < habitId.length; i++)
+      hash = habitId.charCodeAt(i) + ((hash << 5) - hash);
     return emojiBgColors[Math.abs(hash) % emojiBgColors.length];
   })();
 
-  const completedSet = new Set(completions.map(c => c.slice(0, 10))); // Handle date strings directly
+  const completedSet = new Set(completions.map((c) => c.slice(0, 10))); // Handle date strings directly
   const days = getYearDays();
-  const weeks = Array.from({ length: 53 }, (_, w) => days.slice(w * 7, w * 7 + 7));
+  const weeks = Array.from({ length: 53 }, (_, w) =>
+    days.slice(w * 7, w * 7 + 7)
+  );
 
   function getShade(day) {
     if (!color) return "bg-gray-200";
@@ -93,18 +108,24 @@ export default function MiniHeatmapCard({
   }
 
   return (
-    <div className="w-full bg-white m-0 py-4 flex flex-col gap-2 overflow-x-auto box-border">
+    <div className="w-full bg-white m-0 py-3 flex flex-col gap-1.5 overflow-x-auto box-border">
       {/* Header: Only show if showHeader is true */}
       {showHeader && (
         <div className="flex items-center gap-3 mb-1">
           <span className={`text-2xl p-2 rounded-md ${emojiBg}`}>{emoji}</span>
           <div className="flex flex-col">
-            <span className="font-bold text-xl text-gray-900 leading-tight">{title}</span>
-            <span className="inline-block px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-xs font-semibold mt-0.5 w-fit">{tag}</span>
+            <span className="font-bold text-xl text-gray-900 leading-tight">
+              {title}
+            </span>
+            <span className="inline-block px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-xs font-semibold mt-0.5 w-fit">
+              {tag}
+            </span>
           </div>
           <div className="ml-auto">
             {isCompletedToday && (
-              <span className="bg-green-100 text-green-700 text-xs font-semibold px-4 py-1 rounded-full">Completed Today</span>
+              <span className="bg-green-100 text-green-700 text-xs font-semibold px-4 py-1 rounded-full">
+                Completed Today
+              </span>
             )}
           </div>
         </div>
@@ -115,7 +136,8 @@ export default function MiniHeatmapCard({
             <span className="text-lg">🔥</span> {streak} day streak
           </span>
           <span className="flex items-center gap-1 text-blue-700 font-semibold text-base">
-            <span className="text-lg">🎯</span> {completionPercent}% completion rate
+            <span className="text-lg">🎯</span> {completionPercent}% completion
+            rate
           </span>
         </div>
       )}
@@ -127,39 +149,45 @@ export default function MiniHeatmapCard({
       )}
       {/* Heatmap */}
       <div className="w-full max-w-full overflow-x-auto">
-          <div className="flex flex-col">
-            <div className="flex items-center justify-between mb-1 px-1">
-              <span className="text-xs text-gray-400 font-semibold">Less</span>
-              <div className="flex gap-1">
-                {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
-                {/* The color prop is now directly used for the completed days. */}
-                {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
-              </div>
-              <span className="text-xs text-gray-400 font-semibold">More</span>
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between mb-1 px-1">
+            <span className="text-xs text-gray-400 font-semibold">Less</span>
+            <div className="flex gap-1">
+              {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
+              {/* The color prop is now directly used for the completed days. */}
+              {/* The colorScaleMap and dynamic color classes are removed as per the edit hint. */}
             </div>
-            <div className="flex">
-              {weeks.map((week, wi) => (
-                <div key={wi} className="flex flex-col">
-                  {week.map((day, di) => (
-                    <Tooltip key={day}>
-                      <TooltipTrigger asChild>
-                        <div
-                          className={`w-4 h-4 m-0.5 rounded ${getShade(day)} border border-gray-200 transition-all duration-100 hover:ring-2 hover:ring-gray-700 hover:ring-offset-1`}
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent sideOffset={4}>
-                        <div className="flex flex-col items-center">
-                          <span className="font-semibold">{day}</span>
-                          <span className="text-xs text-gray-400">{completedSet.has(day) ? "Completed" : "Not completed"}</span>
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
-              ))}
-            </div>
+            <span className="text-xs text-gray-400 font-semibold">More</span>
           </div>
+          <div className="flex">
+            {weeks.map((week, wi) => (
+              <div key={wi} className="flex flex-col">
+                {week.map((day, di) => (
+                  <Tooltip key={day}>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={`w-3 h-3 m-0.25 rounded ${getShade(
+                          day
+                        )} border border-gray-200 transition-all duration-100 hover:ring-2 hover:ring-gray-700 hover:ring-offset-1`}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent sideOffset={4}>
+                      <div className="flex flex-col items-center">
+                        <span className="font-semibold">{day}</span>
+                        <span className="text-xs text-gray-400">
+                          {completedSet.has(day)
+                            ? "Completed"
+                            : "Not completed"}
+                        </span>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
-} 
+}
