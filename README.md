@@ -7,7 +7,7 @@
 [![Issues](https://img.shields.io/github/issues/belikedeep/habitly)](https://github.com/belikedeep/habitly/issues)
 
 <p align="center">
-  <img src="public/file.svg" alt="Habitly Screenshot" width="600"/>
+  <img width="1872" height="920" alt="Habitly" src="https://github.com/user-attachments/assets/dc51ba41-06ac-4ef4-8b0d-de554724207f" />
 </p>
 
 A modern, open-source habit tracking application to help you build lasting routines. Track your daily habits, visualize your progress, and stay motivated.
