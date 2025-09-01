@@ -379,7 +379,22 @@ export default function Dashboard() {
             <NewHabitModal
               open={showModal}
               onClose={() => setShowModal(false)}
-              onSubmit={() => setShowModal(false)}
+              onSubmit={async (data) => {
+                setShowModal(false);
+                try {
+                  const res = await fetch("/api/habits", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                  });
+                  const result = await res.json();
+                  if (!res.ok) throw new Error(result.error || "Unknown error");
+                  // Refresh dashboard data after creating habit
+                  window.location.reload();
+                } catch (e) {
+                  console.error("Failed to create habit:", e.message);
+                }
+              }}
             />
           </>
         ) : (
