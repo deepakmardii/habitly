@@ -13,9 +13,9 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import Link from "next/link";
+// import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
-import { FaCheckCircle, FaPlay } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 import { signIn } from "next-auth/react";
 
 const demoHabits = [
@@ -69,7 +69,7 @@ function HabitFlowHero() {
   };
 
   return (
-    <section className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 px-4 flex items-center">
+    <section className="h-screen w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 px-4 flex items-center overflow-hidden">
       <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center justify-between gap-16">
         {/* Left: Headline & Actions */}
         <div className="flex-1 flex flex-col items-start gap-8 max-w-2xl">
@@ -389,7 +389,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
