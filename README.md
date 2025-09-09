@@ -173,10 +173,33 @@ habitly/
 ├── components/            # Shared UI components
 ├── lib/                  # Utility functions
 ├── prisma/               # Database schema and migrations
+├── chrome-extension/     # chrome extension for habitly
 └── public/               # Static assets
 ```
 
 --- -->
+
+---
+
+## Chrome Extension
+
+A Chrome extension is included in the `chrome-extension/` folder.
+
+**Features:**
+
+- NextAuth login (opens Habitly login page)
+- View all your habits as cards (emoji, title, tag, streak, completion percent)
+- Mark today's habit as complete from the extension
+- Quick access to the dashboard
+
+**How to use:**
+
+1. Go to `chrome://extensions` in Chrome.
+2. Enable "Developer mode".
+3. Click "Load unpacked" and select the `chrome-extension/` folder.
+4. Click the extension icon to open the popup.
+5. Sign in with Habitly (NextAuth). After login, return to the extension popup.
+6. Manage your habits directly from the extension.
 
 ## 🤝 Contributing
 
@@ -200,25 +223,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - UI components from [shadcn/ui](https://ui.shadcn.com/)
 - Icons from [Lucide React](https://lucide.dev/)
 - Charts powered by [Recharts](https://recharts.org/)
-
----
-
-## Chrome Extension
-
-A Chrome extension is included in the `chrome-extension/` folder.
-
-**Features:**
-
-- NextAuth login (opens Habitly login page)
-- View all your habits as cards (emoji, title, tag, streak, completion percent)
-- Mark today's habit as complete from the extension
-- Quick access to the dashboard
-
-**How to use:**
-
-1. Go to `chrome://extensions` in Chrome.
-2. Enable "Developer mode".
-3. Click "Load unpacked" and select the `chrome-extension/` folder.
-4. Click the extension icon to open the popup.
-5. Sign in with Habitly (NextAuth). After login, return to the extension popup.
-6. Manage your habits directly from the extension.
