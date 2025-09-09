@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "Habitly Companion",
+    "version": "1.0.0",
+    "description": "Signup, view your heatmap, and complete today's habit from anywhere.",
+    "permissions": [
+        "cookies"
+    ],
+    "host_permissions": [
+        "https://habitly.arcsdesign.in/*"
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    }
+}

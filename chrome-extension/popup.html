@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habitly Extension</title>
+    <link rel="stylesheet" href="popup.css" />
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 16px;
+        width: 340px;
+        background: #f9f9fb;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .btn {
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 0;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      .btn:disabled {
+        background: #a5b4fc;
+      }
+      .center {
+        text-align: center;
+      }
+      .error {
+        color: #dc2626;
+        font-size: 0.95em;
+      }
+      #habits-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .habit-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 14px 12px;
+        box-shadow: 0 1px 4px #0001;
+      }
+      .habit-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+      .habit-emoji {
+        font-size: 1.7em;
+      }
+      .habit-title {
+        font-weight: bold;
+        font-size: 1.1em;
+        margin-right: 8px;
+      }
+      .habit-tag {
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 0.9em;
+        border-radius: 6px;
+        padding: 2px 8px;
+        margin-left: auto;
+      }
+      .habit-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.97em;
+        color: #475569;
+        margin-bottom: 8px;
+      }
+      .habit-streak {
+      }
+      .habit-completion {
+      }
+      .habit-complete-btn {
+        width: 100%;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="container">
+      <div id="auth-section">
+        <div id="nextauth-login">
+          <h2 class="center">Sign In</h2>
+          <button class="btn" id="nextauth-btn">Sign in with Habitly</button>
+          <div
+            class="center"
+            style="font-size: 0.95em; color: #666; margin-top: 8px"
+          >
+            You will be redirected to login and can return here after.
+          </div>
+          <div class="error" id="nextauth-error"></div>
+        </div>
+      </div>
+      <div id="main-section" style="display: none">
+        <div class="center">
+          <h2>Your Habits</h2>
+        </div>
+        <div id="habits-list"></div>
+        <button class="btn" id="dashboard-btn">Open Dashboard</button>
+        <div class="center" id="main-error"></div>
+      </div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
