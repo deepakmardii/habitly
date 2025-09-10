@@ -9,38 +9,38 @@ export async function requireSession(req) {
   return session;
 }
 
-export async function handleGet(req, getFn) {
+export async function handleGet(req, getFunc) {
   try {
-    const data = await getFn(req);
+    const data = await getFunc(req);
     return Response.json(data);
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500 });
   }
 }
 
-export async function handlePost(req, postFn) {
+export async function handlePost(req, postFunc) {
   try {
     const body = await req.json();
-    const data = await postFn(body, req);
+    const data = await postFunc(body, req);
     return Response.json(data);
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500 });
   }
 }
 
-export async function handlePut(req, putFn) {
+export async function handlePut(req, putFunc) {
   try {
     const body = await req.json();
-    const data = await putFn(body, req);
+    const data = await putFunc(body, req);
     return Response.json(data);
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500 });
   }
 }
 
-export async function handleDelete(req, deleteFn) {
+export async function handleDelete(req, deleteFunc) {
   try {
-    const data = await deleteFn(req);
+    const data = await deleteFunc(req);
     return Response.json(data);
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500 });
