@@ -103,6 +103,7 @@ A modern, open-source habit tracking application to help you build lasting routi
 - Node.js 18+
 - PostgreSQL database
 - Google OAuth credentials
+- Dodo Payments credentials
 
 ### Installation
 
